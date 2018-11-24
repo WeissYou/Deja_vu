@@ -17,6 +17,7 @@ void main()
   //MotorL_setting(80,1);
 	//MotorR_setting(80,1);
 	//pwms_enable();
+  /*新的更改*/
 	while(1)
   {
 		  ADCResult_getting();  //ADC结果读取
