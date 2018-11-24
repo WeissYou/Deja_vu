@@ -12,7 +12,9 @@ void Interrupt_init(void)
 	EX0 = 1;       //外部中断0允许
 	IT0 = 0;			 //外部中断0任意沿触发
    
+	#ifndef DEBUG
 	ES = 1;        //使能串口中断
+	#endif
     
 	EA = 1;			   //总中断打开
 }
@@ -67,6 +69,8 @@ void Exint0_routine(void) interrupt 0 using 1
 /*----------------------------
 UART 中断服务程序
 -----------------------------*/
+
+#ifndef DEBUG
 void Usart(void) interrupt 4 using 2
 {
     if (RI)
@@ -79,3 +83,5 @@ void Usart(void) interrupt 4 using 2
         busy = 0;               //清忙标志
     }
 }
+
+#endif

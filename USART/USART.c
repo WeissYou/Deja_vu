@@ -1,5 +1,6 @@
 #include"GLOBAL.H"
 #include"USART.H"
+#include "stdio.h"
 
 /*----------------------------
 初始化串口
@@ -16,6 +17,11 @@ void Usart_init(void)  //115200bps@33.1776MHz
     TL1 = (65536 - (FOSC/4/BAUD));   //设置波特率重装值
     TH1 = (65536 - (FOSC/4/BAUD))>>8;
     TR1 = 1;                    //定时器1开始启动
+	
+	#ifdef DEBUG
+		// 为了使用printf,需要下列设置
+		TI=1;
+	#endif
 }
 
 /*----------------------------
