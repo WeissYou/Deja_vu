@@ -1,0 +1,1 @@
+"Motor\Motor.c" OPTIMIZE (8,SPEED) INCDIR(.\ADC;.\Deja_vu;.\Global;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEBUG OBJECTEXTEND PRINT(.\Motor.lst) TABS (2) OBJECT(Motor.obj)

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ADC" />
+    <Filter Include="Deja_vu" />
+    <Filter Include="Global" />
+    <Filter Include="interrupt" />
+    <Filter Include="Main" />
+    <Filter Include="Motor" />
+    <Filter Include="PWM" />
+    <Filter Include="Timer" />
+    <Filter Include="USART" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ADC\ADC.c">
+    <Filter>ADC</Filter>
+    </ClCompile>
+    <ClInclude Include="ADC\ADC.h">
+    <Filter>ADC</Filter>
+    </ClInclude>
+    <ClCompile Include="Deja_vu\Deja_vu.c">
+    <Filter>Deja_vu</Filter>
+    </ClCompile>
+    <ClInclude Include="Deja_vu\Deja_vu.h">
+    <Filter>Deja_vu</Filter>
+    </ClInclude>
+    <ClCompile Include="Global\Global.c">
+    <Filter>Global</Filter>
+    </ClCompile>
+    <ClInclude Include="Global\Global.h">
+    <Filter>Global</Filter>
+    </ClInclude>
+    <ClCompile Include="interrupt\interrupt.c">
+    <Filter>interrupt</Filter>
+    </ClCompile>
+    <ClInclude Include="interrupt\interrupt.h">
+    <Filter>interrupt</Filter>
+    </ClInclude>
+    <ClCompile Include="Main\main.c">
+    <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Motor\Motor.c">
+    <Filter>Motor</Filter>
+    </ClCompile>
+    <ClInclude Include="Motor\motor.h">
+    <Filter>Motor</Filter>
+    </ClInclude>
+    <ClCompile Include="PWM\PWM.c">
+    <Filter>PWM</Filter>
+    </ClCompile>
+    <ClInclude Include="PWM\pwm.h">
+    <Filter>PWM</Filter>
+    </ClInclude>
+    <ClCompile Include="Timer\timer.c">
+    <Filter>Timer</Filter>
+    </ClCompile>
+    <ClInclude Include="Timer\timer.h">
+    <Filter>Timer</Filter>
+    </ClInclude>
+    <ClCompile Include="USART\USART.c">
+    <Filter>USART</Filter>
+    </ClCompile>
+    <ClInclude Include="USART\USART.h">
+    <Filter>USART</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

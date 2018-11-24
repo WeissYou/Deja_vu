@@ -1,0 +1,11 @@
+"ADC.obj",
+"Deja_vu.obj",
+"Global.obj",
+"interrupt.obj",
+"main.obj",
+"Motor.obj",
+"PWM.obj",
+"timer.obj",
+"USART.obj" 
+TO "Project" 
+RAMSIZE(256) 

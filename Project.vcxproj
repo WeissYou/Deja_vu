@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2F91FE68-F5D2-4C86-9323-882D64B61895}</ProjectGuid>
+    <RootNamespace>Project2</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>DC_motors</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>USE_STDPERIPH_DRIVER;STM32F10X_HD;__CC_ARM</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>.\ADC;.\Deja_vu;.\Global;.\interrupt;.\Motor;.\PWM;.\Timer;.\USART;D:\Program Files\Keil_v5\ARM\ARMCC\include</IncludePath>
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <ExcludePath />
+    <SourcePath />
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="ADC\ADC.c" />
+    <ClInclude Include="ADC\ADC.h" />
+    <ClCompile Include="Deja_vu\Deja_vu.c" />
+    <ClInclude Include="Deja_vu\Deja_vu.h" />
+    <ClCompile Include="Global\Global.c" />
+    <ClInclude Include="Global\Global.h" />
+    <ClCompile Include="interrupt\interrupt.c" />
+    <ClInclude Include="interrupt\interrupt.h" />
+    <ClCompile Include="Main\main.c" />
+    <ClCompile Include="Motor\Motor.c" />
+    <ClInclude Include="Motor\motor.h" />
+    <ClCompile Include="PWM\PWM.c" />
+    <ClInclude Include="PWM\pwm.h" />
+    <ClCompile Include="Timer\timer.c" />
+    <ClInclude Include="Timer\timer.h" />
+    <ClCompile Include="USART\USART.c" />
+    <ClInclude Include="USART\USART.h" />
+  </ItemGroup>
+</Project>
