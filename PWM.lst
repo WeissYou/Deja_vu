@@ -1,57 +1,59 @@
-C51 COMPILER V9.59.0.0   PWM                                                               11/23/2018 19:11:30 PAGE 1   
+C51 COMPILER V9.54   PWM                                                                   11/24/2018 15:11:53 PAGE 1   
 
 
-C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PWM
+C51 COMPILER V9.54, COMPILATION OF MODULE PWM
 OBJECT MODULE PLACED IN PWM.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE PWM\PWM.c OPTIMIZE(8,SPEED) INCDIR(.\ADC;.\Deja_vu;.\Global;.\interrupt;
-                    -.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEBUG OBJECTEXTEND PRINT(.\PWM.lst) TABS(2) OBJECT(PWM.obj)
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE PWM\PWM.c OPTIMIZE(2,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\int
+                    -errupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEFINE(DEBUG) DEBUG OBJECTEXTEND PRINT(.\PWM.lst) TABS(2) OBJE
+                    -CT(PWM.obj)
 
 line level    source
 
    1          #include"Global.h"
    2          #include<PWM.h>
-   3          
-   4          /***** 函数 *****/
-   5          void pwmL_setting(uchar duty)     
-   6          {
-   7   1          P_SW2 |= 0x80;                //使能访问XSFR
-   8   1          PWM6T1 = 0x0000;                //设置PWM6第1次反转的PWM计数
-   9   1          PWM6T2 = CYCLE * duty / 100;    //设置PWM6第2次反转的PWM计数
-  10   1                                          //占空比为(PWM6T2-PWM6T1)/PWMC
-  11   1          PWM6CR = 0x08;                  //选择PWM6输出到P0.7,不使能PWM2中断
-  12   1          P_SW2 &= ~0x80;
-  13   1      }
-  14          
-  15          void pwmR_setting(uchar duty)
-  16          {
-  17   1          P_SW2 |= 0x80;                //使能访问XSFR
-  18   1          PWM7T1 = 0x0000;                //设置PWM7第1次反转的PWM计数
-  19   1          PWM7T2 = CYCLE * duty / 100;    //设置PWM7第2次反转的PWM计数
-  20   1                                          //占空比为(PWM7T2-PWM7T1)/PWMC
-  21   1          PWM7CR = 0x08;                  //选择PWM7输出到P0.6,不使能PWM3中断
-  22   1          P_SW2 &= ~0x80;
-  23   1      }
-  24          
-  25          void pwms_enable(void)          //每处pwm设定均需调用该函数，且须置于所有pwmn_setting之后
-  26          {
-  27   1          P_SW2 |= 0x80; 
-  28   1        PWMCFG = 0x00;                  //配置PWM的输出初始电平为低电平
-  29   1          PWMCKS = 0x0c;                  //选择PWM的时钟为Fosc/(0+12)
-  30   1        PWMC = CYCLE;                   //设置PWM周期
-  31   1          PWMCR = 0xB0;                   //使能PWM模块  
-  32   1        P_SW2 &= ~0x80;   
-  33   1      }
-  34          
+   3          #include "stdio.h"
+   4          
+   5          /***** 函数 *****/
+   6          void pwmL_setting(uchar duty)     
+   7          {
+   8   1          P_SW2 |= 0x80;                //使能访问XSFR
+   9   1          PWM6T1 = 0x0000;                //设置PWM6第1次反转的PWM计数
+  10   1          PWM6T2 = CYCLE * duty / 100;    //设置PWM6第2次反转的PWM计数
+  11   1                                          //占空比为(PWM6T2-PWM6T1)/PWMC
+  12   1          PWM6CR = 0x08;                  //选择PWM6输出到P0.7,不使能PWM2中断
+  13   1          P_SW2 &= ~0x80;
+  14   1      }
+  15          
+  16          void pwmR_setting(uchar duty)
+  17          {
+  18   1          P_SW2 |= 0x80;                //使能访问XSFR
+  19   1          PWM7T1 = 0x0000;                //设置PWM7第1次反转的PWM计数
+  20   1          PWM7T2 = CYCLE * duty / 100;    //设置PWM7第2次反转的PWM计数
+  21   1                                          //占空比为(PWM7T2-PWM7T1)/PWMC
+  22   1          PWM7CR = 0x08;                  //选择PWM7输出到P0.6,不使能PWM3中断
+  23   1          P_SW2 &= ~0x80;
+  24   1      }
+  25          
+  26          void pwms_enable(void)          //每处pwm设定均需调用该函数，且须置于所有pwmn_setting之后
+  27          {
+  28   1          P_SW2 |= 0x80; 
+  29   1        PWMCFG = 0x00;                  //配置PWM的输出初始电平为低电平
+  30   1          PWMCKS = 0x0c;                  //选择PWM的时钟为Fosc/(0+12)
+  31   1        PWMC = CYCLE;                   //设置PWM周期
+  32   1          PWMCR = 0xB0;                   //使能PWM模块  
+  33   1        P_SW2 &= ~0x80;   
+  34   1      }
   35          
   36          
+  37          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    123    ----
+   CODE SIZE        =    147    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =   ----       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

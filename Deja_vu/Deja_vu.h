@@ -1,6 +1,40 @@
-#ifndef __DEJA_VU_H_
-#define __DEJA_VU_H_
+/******************** (C) COPYRIGHT 2018 陈苏阳 **********************************
+* File Name          :  Deja_vu.h
+* Author             :  陈苏阳
+* CPU Type           :  NRF52810
+* IDE                :  IAR 8.22.1
+* Version            :  V1.0
+* Date               :  24/11/2018
+* Description        :  寻迹逻辑
+*******************************************************************************/
 
+
+
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __DEJA_VU_H
+#define  __DEJA_VU_H
+
+/* Includes ------------------------------------------------------------------*/
+
+
+/* Private define ------------------------------------------------------------*/
+#define HISTORY_DIR_DATA_SIZE           5           // 存储的历史方向数据个数
+
+/* Private typedef -----------------------------------------------------------*/
+
+
+/* Private variables ---------------------------------------------------------*/
+
+
+/* Private function prototypes -----------------------------------------------*/
 void Deja_vu(void);  //循迹程序
 
-#endif
+#endif /* __DEJA_VU_H */
+
+
+
+
+
+/******************* (C) COPYRIGHT 2018 陈苏阳 *****END OF FILE******************/
+

@@ -1,5 +1,6 @@
 #include"Global.h"
 #include<PWM.h>
+#include "stdio.h"
 
 /***** º¯Êý *****/
 void pwmL_setting(uchar duty)	  	

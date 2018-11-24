@@ -30,10 +30,10 @@ void Timer0_routine(void) interrupt 1 using 0
 	if(flag == 1)
 	  {
 		  flag = 0;
-	    Motors_break();
+	    //Motors_break();
 	    Delay(1000);
-	    MotorL_setting(50,1);
-	    MotorR_setting(50,1);
+	    //MotorL_setting(50,1);
+	    //MotorR_setting(50,1);
 	    pwms_enable();
 		  Delay(20);
 	  }

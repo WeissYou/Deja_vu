@@ -1,11 +1,38 @@
-#ifndef __MOTOR_H_
-#define __MOTOR_H_
+/******************** (C) COPYRIGHT 2018 陈苏阳 **********************************
+* File Name          :  motor.h
+* Author             :  陈苏阳
+* CPU Type           :  STC15
+* IDE                :  IAR 8.22.1
+* Version            :  V1.0
+* Date               :  24/11/2018
+* Description        :  
+*******************************************************************************/
 
-/***** 电机设置函数 *****/
-void Motors_stop(void);		            //非正常情况下的停车	
-void Motors_break(void);                     //停车			
-void MotorL_setting(uchar speed,uchar dir);	 //电机0控制
-void MotorR_setting(uchar speed,uchar dir);	 //电机1控制
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __MOTOR_H
+#define  __MOTOR_H
+
+/* Includes ------------------------------------------------------------------*/
 
 
-#endif
+/* Private define ------------------------------------------------------------*/
+
+
+/* Private typedef -----------------------------------------------------------*/
+
+
+/* Private variables ---------------------------------------------------------*/
+
+
+/* Private function prototypes -----------------------------------------------*/
+void Motors_stop(void);
+void MotorL_setting_auto_dir(char speed);
+void MotorR_setting_auto_dir(char speed);
+
+#endif /* __MOTOR_H */
+
+
+
+/******************* (C) COPYRIGHT 2018 陈苏阳 *****END OF FILE******************/
+

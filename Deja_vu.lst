@@ -1,11 +1,11 @@
-C51 COMPILER V9.59.0.0   DEJA_VU                                                           11/23/2018 19:11:28 PAGE 1   
+C51 COMPILER V9.54   DEJA_VU                                                               11/24/2018 15:44:58 PAGE 1   
 
 
-C51 COMPILER V9.59.0.0, COMPILATION OF MODULE DEJA_VU
+C51 COMPILER V9.54, COMPILATION OF MODULE DEJA_VU
 OBJECT MODULE PLACED IN Deja_vu.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Deja_vu\Deja_vu.c OPTIMIZE(8,SPEED) INCDIR(.\ADC;.\Deja_vu;.\Global;.\in
-                    -terrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEBUG OBJECTEXTEND PRINT(.\Deja_vu.lst) TABS(2) OBJECT(Deja_v
-                    -u.obj)
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Deja_vu\Deja_vu.c OPTIMIZE(2,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Glob
+                    -al;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEFINE(DEBUG) DEBUG OBJECTEXTEND PRINT(.\Deja_vu.lst) 
+                    -TABS(2) OBJECT(Deja_vu.obj)
 
 line level    source
 
@@ -13,218 +13,175 @@ line level    source
    2          #include"GLOBAL.H"
    3          #include"MOTOR.H"
    4          #include"PWM.H"
-   5          
-   6          void Deja_vu(void)
-   7          {         
-   8   1         switch(situation)                                         
-   9   1         {
-  10   2          //起动
-  11   2          case 255:         //1111 1111
-  12   2          {
-  13   3             MotorL_setting(100,1);  
-  14   3             MotorR_setting(100,1); 
-  15   3           //goback = 0;            //不放置倒车标志位
-  16   3           break; 
-  17   3          }
-  18   2          
-  19   2          //停止
-  20   2          
-  21   2          case 0:
-  22   2          {
-  23   3           Motors_stop();
-  24   3           //goback = 0;            //不放置倒车标志位
-  25   3           break; 
-  26   3          }
-  27   2           
-  28   2          //直行中调整
-  29   2          //4灯情况
-  30   2            case 60:          //0011 1100
-  31   2          {
-  32   3            MotorL_setting(100,1);
-  33   3          MotorR_setting(100,1);
-  34   3          //goback = 0;           //不放置倒车标志位
-  35   3          }
-  36   2          case 30:            //0001 1110
-  37   2          {
-  38   3             MotorL_setting(100,1);
-  39   3           MotorR_setting(50,1);
-  40   3           //goback = 0;            //不放置倒车标志位
-  41   3          } 
-  42   2          case 120:         //0111 1000
-  43   2          {
-  44   3            MotorL_setting(50,1);
-  45   3          MotorR_setting(100,1);
-  46   3          //goback = 0;           //不放置倒车标志位
-  47   3          } 
-  48   2      
-  49   2          //3灯情况 
-  50   2          case 28:                  //0001 1100
-  51   2          {
-  52   3             MotorL_setting(100,1);  
-  53   3               MotorR_setting(80,1);  
-C51 COMPILER V9.59.0.0   DEJA_VU                                                           11/23/2018 19:11:28 PAGE 2   
+   5          #include "stdio.h"
+   6          
+   7          char history_dir_data[HISTORY_DIR_DATA_SIZE] = { 0x00 };        // 历史方向数据
+   8          
+   9          // 方向PID参数
+  10          const char dir_pid_p = 17;
+  11          const char dir_pid_i = 4;
+  12          const char dir_pid_d = 5;
+  13          
+  14          /*******************************************************************************
+  15          *                           陈苏阳@2018-11-24
+  16          * Function Name  :  Calculate_Motor_Parameters
+  17          * Description    :  计算电机参数
+  18          * Input          :  None
+  19          * Output         :  None
+  20          * Return         :  char                返回最终计算出的方向
+  21          *******************************************************************************/
+  22          char Calculate_Motor_Parameters(void)
+  23          {
+  24   1          int dir_pid_p_tmp = 0;      // pid比例计算临时存储变量
+  25   1          int dir_pid_i_tmp=0;        // pid积分计算临时存储变量
+  26   1          int dir_pid_d_tmp = 0;      // pid微分计算临时存储变量
+  27   1          char calculate_dir = 0;      // 计算出的最终结果
+  28   1          unsigned char i = 0;
+  29   1      
+  30   1          /****************方向PID*****************/
+  31   1          for (i = 0; i < HISTORY_DIR_DATA_SIZE; i++)
+  32   1          {
+  33   2              // 对历史位置数据积分累加
+  34   2              dir_pid_i_tmp += history_dir_data[i];
+  35   2          }
+  36   1          // 乘以积分系数
+  37   1          dir_pid_i_tmp *= dir_pid_i;
+  38   1          
+  39   1          // 比例结果为当前位置*比例系数
+  40   1          dir_pid_p_tmp = history_dir_data[0] * dir_pid_p;
+  41   1      
+  42   1          // 微分结果为(本次位置-上上次位置(跳过一个,以拉大时间差))*微分系数
+  43   1          dir_pid_d_tmp = (history_dir_data[0] - history_dir_data[2]);//*dir_pid_i;
+  44   1          
+  45   1          // 计算最终结果
+  46   1          calculate_dir = dir_pid_p_tmp + dir_pid_i_tmp + dir_pid_d_tmp;
+  47   1        
+  48   1          // 限位
+  49   1          if (calculate_dir > 100)calculate_dir = 100;
+  50   1          if (calculate_dir < -100)calculate_dir = -100;
+  51   1      
+  52   1      
+  53   1          /*****************方向对应的电机方向&PWM映射*******************/
+C51 COMPILER V9.54   DEJA_VU                                                               11/24/2018 15:44:58 PAGE 2   
 
-  54   3           //goback = 0;            //不放置倒车标志位
-  55   3           break;        
-  56   3          }                   
-  57   2          case 56:                //0011 1000
-  58   2          {
-  59   3             MotorL_setting(80,1);   
-  60   3               MotorR_setting(100,1); 
-  61   3           //goback = 0;            //不放置倒车标志位
-  62   3           break;       
-  63   3          }
-  64   2          case 14:              //0000 1110
-  65   2          {
-  66   3             MotorL_setting(100,1);  
-  67   3               MotorR_setting(40,1);  
-  68   3           //goback = 0;            //不放置倒车标志位
-  69   3           break;      
-  70   3          }
-  71   2          case 112:             //0111 0000
-  72   2          {
-  73   3             MotorL_setting(40,1);   
-  74   3               MotorR_setting(100,1); 
-  75   3           //goback = 0;            //不放置倒车标志位
-  76   3           break;       
-  77   3          }
-  78   2      
-  79   2          //2灯情况
-  80   2          case 18:                //0001 1000
-  81   2          {
-  82   3             MotorL_setting(100,1);  
-  83   3               MotorR_setting(100,1); 
-  84   3           //goback = 0;            //不放置倒车标志位
-  85   3           break;      
-  86   3          }
-  87   2          case 24:                             //0000 1100
-  88   2          {
-  89   3             MotorL_setting(100,1);  
-  90   3               MotorR_setting(60,1);  
-  91   3           //goback = 0;            //不放置倒车标志位
-  92   3           break;       
-  93   3          }
-  94   2          case 48:                //0011 0000
-  95   2          {
-  96   3             MotorL_setting(60,1);   
-  97   3               MotorR_setting(100,1); 
-  98   3           //goback = 0;            //不放置倒车标志位
-  99   3           break;       
- 100   3          }
- 101   2          //1灯情况    
- 102   2          case 8:                   //0000 1000
- 103   2          {
- 104   3             MotorL_setting(100,1);  
- 105   3               MotorR_setting(80,1);  
- 106   3           //goback = 0;            //不放置倒车标志位
- 107   3           break;       
- 108   3          }
- 109   2          case 10:                    //0001 0000
- 110   2          {
- 111   3             MotorL_setting(80,1);   
- 112   3               MotorR_setting(100,1); 
- 113   3           //goback = 0;            //不放置倒车标志位
- 114   3           break;    
- 115   3          }
-C51 COMPILER V9.59.0.0   DEJA_VU                                                           11/23/2018 19:11:28 PAGE 3   
+  54   1          if (calculate_dir > 0)
+  55   1          {
+  56   2          
+  57   2            if(calculate_dir>50)
+  58   2            {
+  59   3              // 如果偏的过多,需要使用反转
+  60   3              MotorR_setting_auto_dir(100);
+  61   3              MotorL_setting_auto_dir(-calculate_dir);
+  62   3            }
+  63   2            else
+  64   2            {
+  65   3              // 如果偏的不多,直接减速就可以处理
+  66   3              MotorR_setting_auto_dir(100);
+  67   3              MotorL_setting_auto_dir(100 - calculate_dir);
+  68   3            }
+  69   2          }
+  70   1          else if (calculate_dir < 0)
+  71   1          {
+  72   2            
+  73   2            if(calculate_dir<-50)
+  74   2            {
+  75   3              // 如果偏的过多,需要使用反转
+  76   3              MotorR_setting_auto_dir(calculate_dir);
+  77   3              MotorL_setting_auto_dir(100);
+  78   3            }
+  79   2            else
+  80   2            {
+  81   3              // 如果偏的不多,直接减速就可以处理
+  82   3              MotorR_setting_auto_dir(100 - (-calculate_dir));
+  83   3              MotorL_setting_auto_dir(100);
+  84   3            }
+  85   2          }
+  86   1          else
+  87   1          {
+  88   2              MotorL_setting_auto_dir(100);
+  89   2              MotorR_setting_auto_dir(100);
+  90   2          }
+  91   1      
+  92   1          return calculate_dir;
+  93   1      }// End of char Calculate_Motor_Parameters(void)
+  94          
+  95          
+  96          
+  97          /*******************************************************************************
+  98          *                           陈苏阳@2018-11-24
+  99          * Function Name  :  Calculate_Dir
+ 100          * Description    :  计算方向数据
+ 101          * Input          :  None
+ 102          * Output         :  None
+ 103          * Return         :  None
+ 104          *******************************************************************************/
+ 105          char Calculate_Dir(unsigned char sensor_data)
+ 106          {
+ 107   1          char Weights[8] = { -3,-2,-1,0,0,1,2,3 };               // 8路寻迹灰度传感器每一位的权重
+ 108   1          char dir = 0;                                             // 根据权重以及灰度传感器数据计算出的方向
+ 109   1          unsigned char i = 0;
+ 110   1          // 计算方向值
+ 111   1          for (i = 0; i < 8; i++)
+ 112   1          {
+ 113   2              // 如果灰度传感器的第i位为1
+ 114   2              if (sensor_data&(0x01 << i))
+ 115   2              {
+C51 COMPILER V9.54   DEJA_VU                                                               11/24/2018 15:44:58 PAGE 3   
 
- 116   2      
- 117   2          case 4:                   //0000 0100
- 118   2          {
- 119   3             MotorL_setting(100,1);  
- 120   3               MotorR_setting(60,1);  
- 121   3           //goback = 0;            //不放置倒车标志位            
- 122   3           break;  
- 123   3          }
- 124   2          case 32:                      //0010 0000
- 125   2          {
- 126   3             MotorL_setting(60,1);   
- 127   3               MotorR_setting(100,1); 
- 128   3           //goback = 0;            //不放置倒车标志位
- 129   3           break; 
- 130   3          }
- 131   2          //右转向
- 132   2          
- 133   2          case 240:               //1111 0000
- 134   2          {
- 135   3           MotorL_setting(50,0);   
- 136   3               MotorR_setting(100,1); 
- 137   3           //goback = 0;            //不放置倒车标志位
- 138   3           break;         
- 139   3          }
- 140   2          
- 141   2          case 224:               //1110 0000
- 142   2          {
- 143   3           MotorL_setting(75,0);   
- 144   3               MotorR_setting(100,1); 
- 145   3           //goback = 0;            //不放置倒车标志位
- 146   3           break;       
- 147   3          }
- 148   2          
- 149   2          case 192:               //1100 0000
- 150   2          {
- 151   3             MotorL_setting(100,0);  
- 152   3               MotorR_setting(100,1); 
- 153   3           //goback = 0;            //不放置倒车标志
- 154   3           break;       
- 155   3          }
- 156   2          /*
- 157   2          case 128:               //1000 0000
- 158   2          {
- 159   2             MotorL_setting(100,0);  
- 160   2               MotorR_setting(100,1); 
- 161   2           //goback = 0;            //不放置倒车标志
- 162   2           break;       
- 163   2          }
- 164   2          */
- 165   2          //左转向
- 166   2          
- 167   2          case 15:                //0000 1111
- 168   2          {
- 169   3           MotorL_setting(100,1);  
- 170   3               MotorR_setting(50,0);  
- 171   3           //goback = 0;            //不放置倒车标志位
- 172   3           break;         
- 173   3          }
- 174   2          
- 175   2          case 7:               //0000 0111
- 176   2          {
- 177   3             
-C51 COMPILER V9.59.0.0   DEJA_VU                                                           11/23/2018 19:11:28 PAGE 4   
-
- 178   3           MotorL_setting(100,1);  
- 179   3               MotorR_setting(75,0);  
- 180   3               //goback = 0;            //不放置倒车标志 
- 181   3           break;       
- 182   3          }
- 183   2          
- 184   2          case 195:               //0000 0011
- 185   2          {
- 186   3             MotorL_setting(100,1);  
- 187   3               MotorR_setting(100,0); 
- 188   3           //goback = 0;            //不放置倒车标志
- 189   3           break;       
- 190   3          }
- 191   2          /*
- 192   2          case 1:               //0000 0001
- 193   2          {
- 194   2             MotorL_setting(100,1);  
- 195   2               MotorR_setting(100,0); 
- 196   2           //goback = 0
- 197   2           break;       
- 198   2          }
- 199   2          */
- 200   2           }
- 201   1         pwms_enable();         //PWM设定生效
- 202   1      }
+ 116   3                  // 方向数值上加上对应位的权重
+ 117   3                  dir = dir + Weights[i];
+ 118   3              }
+ 119   2          }
+ 120   1          return dir;
+ 121   1      }// End of char Calculate_Dir(unsigned char sensor_data)
+ 122          
+ 123          
+ 124          
+ 125          void Deja_vu(void)
+ 126          {  
+ 127   1          char Weights[8] = { -3,-2,-1,0,0,1,2,3 };               // 8路寻迹灰度传感器每一位的权重
+ 128   1          char dir=0;                                             // 根据权重以及灰度传感器数据计算出的方向
+ 129   1          unsigned char i=0;
+ 130   1      
+ 131   1          // 计算方向
+ 132   1          dir=Calculate_Dir(situation);
+ 133   1      
+ 134   1          // 更新历史方向数据
+ 135   1          for (i = HISTORY_DIR_DATA_SIZE - 1; i > 0; i--)
+ 136   1          {
+ 137   2              history_dir_data[i] = history_dir_data[i-1];
+ 138   2          }
+ 139   1          history_dir_data[0] = dir;
+ 140   1      
+ 141   1          // 小车跑飞(所有传感器全压白线)
+ 142   1          if (situation == 0x00)
+ 143   1          {
+ 144   2              Motors_stop();
+ 145   2          }
+ 146   1          // 小车处于起跑线(所有传感器全压黑线)
+ 147   1          else if(situation ==0xFF)
+ 148   1          {
+ 149   2              MotorL_setting_auto_dir(100);
+ 150   2              MotorR_setting_auto_dir(100);
+ 151   2          }
+ 152   1          else
+ 153   1          {
+ 154   2              // 计算电机参数并驱动电机
+ 155   2              Calculate_Motor_Parameters();
+ 156   2          }
+ 157   1      
+ 158   1      
+ 159   1          // PWM设定生效
+ 160   1          pwms_enable();         
+ 161   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    331    ----
-   CONSTANT SIZE    =   ----    ----
+   CODE SIZE        =    497    ----
+   CONSTANT SIZE    =     16    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =      8      29
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

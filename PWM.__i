@@ -1,0 +1,1 @@
+"PWM\PWM.c" OPTIMIZE (2,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEFINE (DEBUG) DEBUG OBJECTEXTEND PRINT(.\PWM.lst) TABS (2) OBJECT(PWM.obj)

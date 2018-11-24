@@ -1,10 +1,11 @@
-C51 COMPILER V9.59.0.0   ADC                                                               11/23/2018 19:11:28 PAGE 1   
+C51 COMPILER V9.54   ADC                                                                   11/24/2018 13:50:02 PAGE 1   
 
 
-C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ADC
+C51 COMPILER V9.54, COMPILATION OF MODULE ADC
 OBJECT MODULE PLACED IN ADC.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ADC\ADC.c OPTIMIZE(8,SPEED) INCDIR(.\ADC;.\Deja_vu;.\Global;.\interrupt;
-                    -.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEBUG OBJECTEXTEND PRINT(.\ADC.lst) TABS(2) OBJECT(ADC.obj)
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE ADC\ADC.c OPTIMIZE(2,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\int
+                    -errupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEFINE(DEBUG) DEBUG OBJECTEXTEND PRINT(.\ADC.lst) TABS(2) OBJE
+                    -CT(ADC.obj)
 
 line level    source
 
@@ -61,9 +62,9 @@ line level    source
   51          {   
   52   1        uchar i = 0;
   53   1        situation=0x00;
-  54   1        for(i = 0; i <8 ; i++)
-C51 COMPILER V9.59.0.0   ADC                                                               11/23/2018 19:11:28 PAGE 2   
+C51 COMPILER V9.54   ADC                                                                   11/24/2018 13:50:02 PAGE 2   
 
+  54   1        for(i = 0; i <8 ; i++)
   55   1        {
   56   2          if(adc[i]>=gray[i])
   57   2          {
@@ -118,16 +119,16 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    138    ----
+   CODE SIZE        =    161    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =   ----       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
-END OF MODULE INFORMATION.
+C51 COMPILER V9.54   ADC                                                                   11/24/2018 13:50:02 PAGE 3   
 
-C51 COMPILER V9.59.0.0   ADC                                                               11/23/2018 19:11:28 PAGE 3   
+END OF MODULE INFORMATION.
 
 
 C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
