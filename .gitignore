@@ -1,0 +1,15 @@
+*.filters
+*.vcxproj
+*.user
+*.exe
+*.sln
+*.db
+*.suo
+*.o
+*.pbi
+*.xcl
+*.pbi
+*.xcl
+*.opendb
+/.vs/
+/Debug/
