@@ -1,48 +1,43 @@
 /******************** (C) COPYRIGHT 2018 陈苏阳 **********************************
-* File Name          :  Deja_vu.h
+* File Name          :  Motors_Break.h
 * Author             :  陈苏阳
 * CPU Type           :  STC15
 * IDE                :  IAR 8.22.1
 * Version            :  V1.0
 * Date               :  24/11/2018
-* Description        :  寻迹
+* Description        :  小车后退修正
 *******************************************************************************/
 
 
 
+
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __DEJA_VU_H
-#define  __DEJA_VU_H
+#ifndef __MOTORS_BREAK_H
+#define  __MOTORS_BREAK_H
 
 /* Includes ------------------------------------------------------------------*/
 
 
 /* Private define ------------------------------------------------------------*/
+#define MOTORS_BREAK_MOTOR_STOP_FIRST_DELAY_TIME                                10           //小车倒车修正机制开始后的停车时间(单位为倒车修正机制Time_Handle函数的执行周期)
 
 
 /* Private typedef -----------------------------------------------------------*/
 typedef enum
 {
-    TRACING_STATUS_STATUS_IDLE = 0,         // 当前小车寻迹机制处于空闲状态
-    TRACING_STATUS_STATUS_RUNING,           // 当前寻迹机制处于运行状态
-}TRACING_STATUS;// 寻迹机制的运行状态
-
+    MOTORS_BREAK_STATUS_IDLE = 0,         // 当前小车倒退修正机制处于空闲状态
+    MOTORS_BREAK_STATUS_FIRST_STOP_DELAY, // 当前小车倒退修正机制处于第一次等待中(刚刚开始倒车修正,先停转电机后等待若干时间)
+    MOTORS_BREAK_STATUS_WAIT_BLACK_LINE,  // 当前小车倒退机制正在等待黑线(小车倒退中)
+}MOTORS_BREAK_STATUS;// 小车倒退修正机制的运行状态
 
 /* Private variables ---------------------------------------------------------*/
 
 
-
 /* Private function prototypes -----------------------------------------------*/
-
-void Tracing_Start(void);               // 开始寻迹机制
-void Tracing_Set_Speed_Half(void);      // 设置寻迹速度为半速
-void Tracing_Set_Speed_All(void);       // 设置寻迹速度为半速
-void Tracing_Stop(void);                // 停止寻迹机制
-unsigned char Tracing_Get_Black_Spot_Number(void);      // 获取当前寻迹传感器压到的黑点个数
-void Tracing_Timer_Handle(void);        //循迹定时器处理函数
-
-#endif /* __DEJA_VU_H */
-
+void Motors_Break_Start(void);
+unsigned char Motors_Break_Is_Ok(void);
+void Motors_Break_Timer_Handle(void);
+#endif /* __MOTORS_BREAK_H */
 
 
 

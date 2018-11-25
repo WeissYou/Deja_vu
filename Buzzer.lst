@@ -1,0 +1,146 @@
+C51 COMPILER V9.54   BUZZER                                                                11/25/2018 07:37:24 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE BUZZER
+OBJECT MODULE PLACED IN Buzzer.obj
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Buzzer\Buzzer.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global
+                    -;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXTEND P
+                    -RINT(.\Buzzer.lst) TABS(2) OBJECT(Buzzer.obj)
+
+line level    source
+
+   1          /******************** (C) COPYRIGHT 2018 ³ÂËÕÑô **********************************
+   2          * File Name          :  Buzzer.c
+   3          * Author             :  ³ÂËÕÑô
+   4          * CPU Type           :  STC15
+   5          * IDE                :  IAR 8.22.1
+   6          * Version            :  V1.0
+   7          * Date               :  24/11/2018
+   8          * Description        :  ·äÃùÆ÷
+   9          *******************************************************************************/
+  10          
+  11          
+  12          
+  13          
+  14          
+  15          /* Includes ------------------------------------------------------------------*/
+  16          #include "Global.h"
+  17          #include "Buzzer.h"
+  18          /* Private variables ---------------------------------------------------------*/
+  19          unsigned int buzzer_tweet_time_cnt=0;              // Ê£ÓàµÄÃù½ÐµÄÊ±¼ä
+  20          
+  21          /* Private function prototypes -----------------------------------------------*/
+  22          
+  23          
+  24          /* Private functions ---------------------------------------------------------*/
+  25          
+  26          
+  27          
+  28          /*******************************************************************************
+  29          *                           ³ÂËÕÑô@2018-11-24
+  30          * Function Name  :  Buzzer_Init
+  31          * Description    :  ·äÃùÆ÷³õÊ¼»¯
+  32          * Input          :  None
+  33          * Output         :  None
+  34          * Return         :  None
+  35          *******************************************************************************/
+  36          void Buzzer_Init(void)
+  37          {
+  38   1          // ÉèÖÃP00¿ÚÎª¿ªÂ©
+  39   1          P0M1 |= 0x01;
+  40   1          P0M0 |= 0x01;
+  41   1      }// End of void Buzzer_Init(void)
+  42          
+  43          /*******************************************************************************
+  44          *                           ³ÂËÕÑô@2018-11-24
+  45          * Function Name  :  _Buzzer_ON 
+  46          * Description    :  ·äÃùÆ÷Ãù½Ð
+  47          * Input          :  None
+  48          * Output         :  None
+  49          * Return         :  None
+  50          *******************************************************************************/
+  51          void _Buzzer_ON(void)
+  52          {
+  53   1          BUZZER_PIN = 0;
+C51 COMPILER V9.54   BUZZER                                                                11/25/2018 07:37:24 PAGE 2   
+
+  54   1      }// End of void _Buzzer_ON(void)
+  55          
+  56          
+  57          
+  58          /*******************************************************************************
+  59          *                           ³ÂËÕÑô@2018-11-24
+  60          * Function Name  :  _Buzzer_OFF
+  61          * Description    :  ·äÃùÆ÷¹Ø±Õ
+  62          * Input          :  None
+  63          * Output         :  None
+  64          * Return         :  None
+  65          *******************************************************************************/
+  66          void _Buzzer_OFF(void)
+  67          {
+  68   1          BUZZER_PIN = 1;
+  69   1      }// End of void _Buzzer_OFF(void)
+  70          
+  71          
+  72          
+  73          /*******************************************************************************
+  74          *                           ³ÂËÕÑô@2018-11-24
+  75          * Function Name  :  Buzzer_Tweet
+  76          * Description    :  ·äÃùÆ÷Ãù½Ð
+  77          * Input          :  unsigned char tweet_time            // Ãù½Ð³ÖÐøµÄÊ±¼ä
+  78          * Output         :  None
+  79          * Return         :  None
+  80          *******************************************************************************/
+  81          void Buzzer_Tweet(unsigned char tweet_time)
+  82          {
+  83   1          // ÉèÖÃÊ£ÓàÃù½ÐÊ±¼ä
+  84   1          buzzer_tweet_time_cnt = tweet_time;
+  85   1      
+  86   1          // ¿ªÆô·äÃùÆ÷
+  87   1          _Buzzer_ON();
+  88   1      
+  89   1      }// End of void Buzzer_Tweet(unsigned char tweet_time)
+  90          
+  91          
+  92          /*******************************************************************************
+  93          *                           ³ÂËÕÑô@2018-11-24
+  94          * Function Name  :  Buzzer_Timer_Handle
+  95          * Description    :  ·äÃùÆ÷¶¨Ê±´¦Àíº¯Êý
+  96          * Input          :  None
+  97          * Output         :  None
+  98          * Return         :  None
+  99          *******************************************************************************/
+ 100          void Buzzer_Timer_Handle(void)
+ 101          {
+ 102   1          // ¼ì²é»¹ÓÐÃ»ÓÐÊ£ÓàÃù½ÐÊ±¼ä
+ 103   1          if (buzzer_tweet_time_cnt)
+ 104   1          {
+ 105   2              // ¿ªÆô·äÃùÆ÷
+ 106   2              _Buzzer_ON();
+ 107   2              buzzer_tweet_time_cnt--;
+ 108   2          }
+ 109   1          else
+ 110   1          {
+ 111   2              // ¹Ø±Õ·äÃùÆ÷
+ 112   2              _Buzzer_OFF();
+ 113   2          }
+ 114   1      }// End of void Buzzer_Timer_Handle(void)
+ 115          
+C51 COMPILER V9.54   BUZZER                                                                11/25/2018 07:37:24 PAGE 3   
+
+ 116          /******************* (C) COPYRIGHT 2018 ³ÂËÕÑô *****END OF FILE******************/
+ 117          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     46    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

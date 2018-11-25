@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="ADC" />
@@ -10,58 +10,93 @@
     <Filter Include="PWM" />
     <Filter Include="Timer" />
     <Filter Include="USART" />
+    <Filter Include="Task">
+      <UniqueIdentifier>{b30442aa-5ff4-4225-8f4a-d991739a2393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Buzzer">
+      <UniqueIdentifier>{d9da1b1b-239e-4934-8753-a0e393fd11c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LED">
+      <UniqueIdentifier>{a7818383-31b9-4910-beff-d9610da28e2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ADC\ADC.c">
-    <Filter>ADC</Filter>
+      <Filter>ADC</Filter>
     </ClCompile>
     <ClInclude Include="ADC\ADC.h">
-    <Filter>ADC</Filter>
+      <Filter>ADC</Filter>
     </ClInclude>
     <ClCompile Include="Deja_vu\Deja_vu.c">
-    <Filter>Deja_vu</Filter>
+      <Filter>Deja_vu</Filter>
     </ClCompile>
     <ClInclude Include="Deja_vu\Deja_vu.h">
-    <Filter>Deja_vu</Filter>
+      <Filter>Deja_vu</Filter>
     </ClInclude>
     <ClCompile Include="Global\Global.c">
-    <Filter>Global</Filter>
+      <Filter>Global</Filter>
     </ClCompile>
     <ClInclude Include="Global\Global.h">
-    <Filter>Global</Filter>
+      <Filter>Global</Filter>
     </ClInclude>
     <ClCompile Include="interrupt\interrupt.c">
-    <Filter>interrupt</Filter>
+      <Filter>interrupt</Filter>
     </ClCompile>
     <ClInclude Include="interrupt\interrupt.h">
-    <Filter>interrupt</Filter>
+      <Filter>interrupt</Filter>
     </ClInclude>
     <ClCompile Include="Main\main.c">
-    <Filter>Main</Filter>
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="Motor\Motor.c">
-    <Filter>Motor</Filter>
+      <Filter>Motor</Filter>
     </ClCompile>
     <ClInclude Include="Motor\motor.h">
-    <Filter>Motor</Filter>
+      <Filter>Motor</Filter>
     </ClInclude>
     <ClCompile Include="PWM\PWM.c">
-    <Filter>PWM</Filter>
+      <Filter>PWM</Filter>
     </ClCompile>
     <ClInclude Include="PWM\pwm.h">
-    <Filter>PWM</Filter>
+      <Filter>PWM</Filter>
     </ClInclude>
     <ClCompile Include="Timer\timer.c">
-    <Filter>Timer</Filter>
+      <Filter>Timer</Filter>
     </ClCompile>
     <ClInclude Include="Timer\timer.h">
-    <Filter>Timer</Filter>
+      <Filter>Timer</Filter>
     </ClInclude>
     <ClCompile Include="USART\USART.c">
-    <Filter>USART</Filter>
+      <Filter>USART</Filter>
     </ClCompile>
     <ClInclude Include="USART\USART.h">
-    <Filter>USART</Filter>
+      <Filter>USART</Filter>
+    </ClInclude>
+    <ClCompile Include="Motor\Motors_Break.c">
+      <Filter>Motor</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Task.c">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Buzzer\Buzzer.c">
+      <Filter>Buzzer</Filter>
+    </ClCompile>
+    <ClCompile Include="LED\LED.c">
+      <Filter>LED</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Motor\Motors_Break.h">
+      <Filter>Motor</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Task.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Buzzer\Buzzer.h">
+      <Filter>Buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="LED\LED.h">
+      <Filter>LED</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

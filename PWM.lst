@@ -1,10 +1,11 @@
-C51 COMPILER V9.59.0.0   PWM                                                               11/23/2018 19:11:30 PAGE 1   
+C51 COMPILER V9.54   PWM                                                                   11/25/2018 07:37:23 PAGE 1   
 
 
-C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PWM
+C51 COMPILER V9.54, COMPILATION OF MODULE PWM
 OBJECT MODULE PLACED IN PWM.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE PWM\PWM.c OPTIMIZE(8,SPEED) INCDIR(.\ADC;.\Deja_vu;.\Global;.\interrupt;
-                    -.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEBUG OBJECTEXTEND PRINT(.\PWM.lst) TABS(2) OBJECT(PWM.obj)
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE PWM\PWM.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\int
+                    -errupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXTEND PRINT(.
+                    -\PWM.lst) TABS(2) OBJECT(PWM.obj)
 
 line level    source
 
@@ -47,11 +48,11 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    123    ----
+   CODE SIZE        =    131    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =   ----       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

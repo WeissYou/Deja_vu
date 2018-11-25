@@ -4,8 +4,12 @@
 "interrupt.obj",
 "main.obj",
 "Motor.obj",
+"Motors_Break.obj",
 "PWM.obj",
 "timer.obj",
-"USART.obj" 
+"USART.obj",
+"Buzzer.obj",
+"Task.obj",
+"LED.obj" 
 TO "Project" 
 RAMSIZE(256) 

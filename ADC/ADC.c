@@ -43,6 +43,28 @@ void ADCResult_getting(void)
     channel = 0;  //切换到下一个通道
     ADC_CONTR = ADC_POWER | ADC_SPEEDLL | ADC_START | channel; 	
 }
+
+
+/*******************************************************************************
+*                           陈苏阳@2018-11-25
+* Function Name  :  ADC_Get_Channel_Data
+* Description    :  获取指定ADC通道的转换结果
+* Input          :  uchar _channel
+* Output         :  unsigned char
+* Return         :  None
+*******************************************************************************/
+unsigned char ADC_Get_Channel_Data(uchar _channel)
+{
+    ADC_CONTR = ADC_POWER | ADC_SPEEDH | _channel | ADC_START;
+    _nop_();                        //等待4个NOP
+    _nop_();
+    _nop_();
+    _nop_();
+    while (!(ADC_CONTR & ADC_FLAG));//等待ADC转换完成
+    ADC_CONTR &= ~ADC_FLAG;         //Close ADC
+
+    return ADC_RES;
+}// End of unsigned char ADC_Get_Channel_Data(uchar _channel)
  
 /*----------------------------
 ADC数据处理
@@ -62,44 +84,5 @@ void Data_processing(void)
 			situation&=(~(0x01<<i));
 		}
 	}
-	/*
-	if(adc[channel] >= gray[channel])	       //若采样值大于一临界值
-    daten = 1;				               //判定为1
-  else					                   //否则
-    daten = 0;				               //判定为0
-  
-	for(i = 0; i <= 7; i++)
-		p1[i] = daten;
-  switch(channel)			               //将处理结果存入数组相应位
-  {
-    case 0:
-	  p1[channel] = daten;
-	  break;
-	case 1:
-	  p1[channel] = daten;
-	  break;
-	case 2:
-	  p1[channel] = daten;
-	  break;
-   	case 3:
-	  p1[channel] = daten;
-	  break;
-	case 4:
-	  p1[channel] = daten;
-	  break;
-	case 5:
-	  p1[channel] = daten;
-	  break;
-	case 6:
-	  p1[channel] = daten;
-	  break;
-	case 7:
-	  p1[channel] = daten;
-	  break;
-  }
-	 
-	 situation = p1[0]*1 + p1[1]*2 + p1[2]*4 + p1[3]*8 + p1[4]*16
-	       + p1[5]*32 + p1[6]*64 + 	p1[7]*128;       //进制转换	  
-*/				 
 }
 

@@ -1,0 +1,162 @@
+C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 07:37:22 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MOTORS_BREAK
+OBJECT MODULE PLACED IN Motors_Break.obj
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Motor\Motors_Break.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\G
+                    -lobal;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXT
+                    -END PRINT(.\Motors_Break.lst) TABS(2) OBJECT(Motors_Break.obj)
+
+line level    source
+
+   1          /******************** (C) COPYRIGHT 2018 陈苏阳 **********************************
+   2          * File Name          :  Motors_Break.c
+   3          * Author             :  陈苏阳
+   4          * CPU Type           :  STC15
+   5          * IDE                :  IAR 8.22.1
+   6          * Version            :  V1.0
+   7          * Date               :  24/11/2018
+   8          * Description        :  小车后退修正
+   9          *******************************************************************************/
+  10          
+  11          
+  12          
+  13          /* Includes ------------------------------------------------------------------*/
+  14          #include "motor.h"
+  15          #include "Motors_Break.h"
+  16          #include "Global.h"
+  17          
+  18          /* Private variables ---------------------------------------------------------*/
+  19          volatile unsigned char Motors_Break_Status = MOTORS_BREAK_STATUS_IDLE;      // 当前小车倒退修正机制状态
+  20          volatile unsigned int Motors_Break_Delay_Time_Cnt = 0;                // 小车倒退修正机制等待时间计数 
+  21          /* Private function prototypes -----------------------------------------------*/
+  22          
+  23          
+  24          /* Private functions ---------------------------------------------------------*/
+  25          
+  26          
+  27          /*******************************************************************************
+  28          *                           陈苏阳@2018-11-24
+  29          * Function Name  :  Motors_Break_Start
+  30          * Description    :  开始运行小车倒退修正机制
+  31          * Input          :  None
+  32          * Output         :  None
+  33          * Return         :  None
+  34          *******************************************************************************/
+  35          void Motors_Break_Start(void)
+  36          {
+  37   1          // 电机停止
+  38   1          Motors_stop();
+  39   1      
+  40   1          // 给delay时间计数设置一个初值
+  41   1          Motors_Break_Delay_Time_Cnt = MOTORS_BREAK_MOTOR_STOP_FIRST_DELAY_TIME;
+  42   1      
+  43   1          // 将当前状态设置为第一次停止等待
+  44   1          Motors_Break_Status = MOTORS_BREAK_STATUS_FIRST_STOP_DELAY;
+  45   1      
+  46   1      }// End of void Motors_Break_Start(void)
+  47          
+  48          
+  49          /*******************************************************************************
+  50          *                           陈苏阳@2018-11-24
+  51          * Function Name  :  Motors_Break_Is_Ok
+  52          * Description    :  查询小车倒退修正机制是否已经完成
+  53          * Input          :  None
+C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 07:37:22 PAGE 2   
+
+  54          * Output         :  None
+  55          * Return         :  None
+  56          *******************************************************************************/
+  57          unsigned char Motors_Break_Is_Ok(void)
+  58          {
+  59   1          if (Motors_Break_Status == MOTORS_BREAK_STATUS_IDLE)return 1;
+  60   1          return 0;
+  61   1      }// End of unsigned char Motors_Break_Is_Ok(void)
+  62          
+  63          
+  64          /*******************************************************************************
+  65          *                           陈苏阳@2018-11-24
+  66          * Function Name  :  Motors_Break_Timer_Handle
+  67          * Description    :  电机后退_定时器处理函数(在定时器中断中调用)
+  68          * Input          :  None
+  69          * Output         :  None
+  70          * Return         :  None
+  71          *******************************************************************************/
+  72          void Motors_Break_Timer_Handle(void)
+  73          {
+  74   1          switch (Motors_Break_Status)
+  75   1          {
+  76   2              // 如果当前处于第一次停车等待状态
+  77   2              case MOTORS_BREAK_STATUS_FIRST_STOP_DELAY:
+  78   2              {
+  79   3                  // 如果等待时间还没结束,时间计数--
+  80   3                  if (Motors_Break_Delay_Time_Cnt > 0)
+  81   3                  {
+  82   4                      Motors_Break_Delay_Time_Cnt--;
+  83   4                  }
+  84   3                  else
+  85   3                  {
+  86   4                      // 如果等待时间已经结束
+  87   4      
+  88   4                      // 如果还有SNR没有压到黑线
+  89   4                      if (SNR0 == 0 || SNR1 == 0)
+  90   4                      {
+  91   5                          MotorL_setting_auto_dir(-40);
+  92   5                          MotorR_setting_auto_dir(-40);
+  93   5      
+  94   5                          // 将当前状态设置为正在等待黑线的出现
+  95   5                          Motors_Break_Status = MOTORS_BREAK_STATUS_WAIT_BLACK_LINE;
+  96   5                      }
+  97   4                      else
+  98   4                      {
+  99   5                          // 如果已经在黑线了,那直接退出
+ 100   5                          Motors_Break_Status = MOTORS_BREAK_STATUS_IDLE;
+ 101   5                      }
+ 102   4      
+ 103   4                     
+ 104   4                  }
+ 105   3                  break;
+ 106   3              }
+ 107   2      
+ 108   2              // 如果当前处于等待黑线出现状态
+ 109   2              case MOTORS_BREAK_STATUS_WAIT_BLACK_LINE:
+ 110   2              {
+ 111   3                  // 如果黑线出现了
+ 112   3                  if (SNR0 == 1 && SNR1 == 1)
+ 113   3                  {
+ 114   4                      // 电机停止
+ 115   4                      Motors_stop();
+C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 07:37:22 PAGE 3   
+
+ 116   4      
+ 117   4                      // 设置倒车修正机制为空闲状态
+ 118   4                      Motors_Break_Status = MOTORS_BREAK_STATUS_IDLE;
+ 119   4                  }
+ 120   3                  else
+ 121   3                  {
+ 122   4                      // 如果黑线还没出现则直接退出这次循环,等待下次检测
+ 123   4                  }
+ 124   3                  break;
+ 125   3              }
+ 126   2          }
+ 127   1      }// End of void Motors_Break_Timer_Handle(void)
+ 128          
+ 129          
+ 130          
+ 131          
+ 132          /******************* (C) COPYRIGHT 2018 陈苏阳 *****END OF FILE******************/
+ 133          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     95    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

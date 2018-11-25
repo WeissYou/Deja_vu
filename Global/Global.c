@@ -10,7 +10,6 @@ uchar goback;          //倒车标志
 uchar adc[8];		       //ADC原始数据存放数组
 uchar daten;           //处理后数据
 uchar p1[8];           //处理后数据存放数组
-uchar flag = 0;            //某标志位
 bit busy;              //串口忙碌标志    
 
 /***** 全局函数 *****/										   

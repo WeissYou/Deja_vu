@@ -1,0 +1,419 @@
+C51 COMPILER V9.54   TASK                                                                  11/25/2018 07:39:08 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE TASK
+OBJECT MODULE PLACED IN Task.obj
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Task\Task.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\i
+                    -nterrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXTEND PRINT
+                    -(.\Task.lst) TABS(2) OBJECT(Task.obj)
+
+line level    source
+
+   1          /******************** (C) COPYRIGHT 2018 ³ÂËÕÑô **********************************
+   2          * File Name          :  Task.c
+   3          * Author             :  ³ÂËÕÑô
+   4          * CPU Type           :  STC15
+   5          * IDE                :  IAR 8.22.1
+   6          * Version            :  V1.0
+   7          * Date               :  24/11/2018
+   8          * Description        :  ÈÎÎñ´¦Àí
+   9          *******************************************************************************/
+  10          
+  11          
+  12          
+  13          /* Includes ------------------------------------------------------------------*/
+  14          #include "Global.h"
+  15          #include "Task.h"
+  16          #include "motor.h"
+  17          #include "Motors_Break.h"
+  18          #include "Deja_vu.h"
+  19          #include "Buzzer.h"
+  20          #include "stdio.h"
+  21          
+  22          /* Private variables ---------------------------------------------------------*/
+  23          volatile unsigned char Task_Status = TASK_STATUS_STARTING_POINT_STANDBY;        // ÈÎÎñ×´Ì¬
+  24          volatile unsigned int Task_Delay_Time_Cnt = 0;                                  // ÈÎÎñÖÐµÄÎÞ×èÈûÑÓÊ±Ê±¼ä¼
+             -ÆÊý
+  25              
+  26          volatile unsigned char tmp_flag=0;                                              // ÁÙÊ±flag
+  27          volatile unsigned char tmp_flag2 = 0;                                           // ÁÙÊ±flag2
+  28          /* Private function prototypes -----------------------------------------------*/
+  29          
+  30          
+  31          /* Private functions ---------------------------------------------------------*/
+  32          
+  33          /*******************************************************************************
+  34          *                           ³ÂËÕÑô@2018-11-24
+  35          * Function Name  :  Task_Delay_Start
+  36          * Description    :  ÈÎÎñÑÓÊ±¿ªÊ¼
+  37          * Input          :  None
+  38          * Output         :  None
+  39          * Return         :  None
+  40          *******************************************************************************/
+  41          void Task_Delay_Start(unsigned int time)
+  42          {
+  43   1          // ÉèÖÃÑÓÊ±Ê±¼ä
+  44   1          Task_Delay_Time_Cnt = time;
+  45   1      }// End of void Task_Delay_Start(unsigned int time)
+  46          
+  47          
+  48          /*******************************************************************************
+  49          *                           ³ÂËÕÑô@2018-11-24
+  50          * Function Name  :  Task_Delay_Is_Delay
+  51          * Description    :  ÈÎÎñÑÓÊ±ÊÇ·ñ´¦ÓÚÑÓÊ±ÖÐ
+  52          * Input          :  None
+C51 COMPILER V9.54   TASK                                                                  11/25/2018 07:39:08 PAGE 2   
+
+  53          * Output         :  None
+  54          * Return         :  None
+  55          *******************************************************************************/
+  56          unsigned char Task_Delay_Is_Delay(void)
+  57          {
+  58   1          if (Task_Delay_Time_Cnt>0)return 1;
+  59   1          return 0;
+  60   1      }// End of unsigned char Task_Delay_Is_Delay(void)
+  61          
+  62          
+  63          /*******************************************************************************
+  64          *                           ³ÂËÕÑô@2018-11-24
+  65          * Function Name  :  Task_Timer_Handle
+  66          * Description    :  ÈÎÎñ¶¨Ê±Æ÷´¦Àíº¯Êý
+  67          * Input          :  None
+  68          * Output         :  None
+  69          * Return         :  None
+  70          *******************************************************************************/
+  71          void Task_Timer_Handle(void)
+  72          {
+  73   1      
+  74   1          // Èç¹ûÈÎÎñÑÓÊ±Ê±¼ä¼ÆÊý»¹ÓÐÖµ,ÔòÈÎÎñÑÓÊ±Ê±¼ä¼ÆÊý--
+  75   1          if (Task_Delay_Time_Cnt>0)Task_Delay_Time_Cnt--;
+  76   1      
+  77   1        switch (Task_Status)
+  78   1        {
+  79   2          // µ±Ç°´¦ÓÚÆðµã´ý»ú×´Ì¬
+  80   2          case TASK_STATUS_STARTING_POINT_STANDBY:
+  81   2          {
+  82   3              // Èç¹ûÑ°¼£´«¸ÐÆ÷Óöµ½È«ºÚ
+  83   3              if (Tracing_Get_Black_Spot_Number() >= TRACING_ALL_BLACK_SPOT_NUMBER)
+  84   3              {
+  85   4                  // ¿ªÊ¼Ñ°¼£»úÖÆ
+  86   4                  Tracing_Start();
+  87   4                
+  88   4                  // ·äÃùÆ÷¶ÌÃù
+  89   4                  Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+  90   4      
+  91   4                  // ÑÓÊ±¿ªÆôÆäËû¼ì²â»úÖÆ
+  92   4                  Task_Delay_Start(TASK_STARTING_POINT_DELAY_TIME);
+  93   4            
+  94   4      #ifdef DEBUG
+  95   4                  //printf("Õý½øÈëÉÏÁÏÇø\n");
+  96   4      #endif    
+  97   4                  // ÇÐ»»×´Ì¬ÎªÕýÔÚ½øÈëÉÏÁÏÇø
+  98   4                  Task_Status=TASK_STATUS_IN_LOADING_AREA;
+  99   4              }
+ 100   3              else
+ 101   3              {
+ 102   4                  // Èç¹ûµ±ÆÚÑ°¼£´«¸ÐÆ÷²»ÊÇÈ«ºÚ
+ 103   4                  // Í£Ö¹Ñ°¼£»úÖÆ
+ 104   4                  Tracing_Stop();
+ 105   4              }
+ 106   3              break;
+ 107   3          }
+ 108   2      
+ 109   2          // µ±Ç°Ð¡³µÕýÔÚ½øÈëÉÏÁÏÇø
+ 110   2          case TASK_STATUS_IN_LOADING_AREA:
+ 111   2          {
+ 112   3              // Èç¹ûÏÖÔÚ²»ÔÚTask DelayÖÐ,ËµÃ÷ÑÓÊ±¿ªÆôÆäËû¼ì²âµÄÕâ¸öÑÓÊ±ÒÑ¾­¹ýÈ¥
+ 113   3              if (Task_Delay_Is_Delay() == 0)
+ 114   3              {
+C51 COMPILER V9.54   TASK                                                                  11/25/2018 07:39:08 PAGE 3   
+
+ 115   4                  // Èç¹û¼ì²âµ½È«ºÚµÄÊ®×ÖÂ·¿Ú(ÒòÎªÊ®×ÖÂ·¿Ú±È½ÏÐ¡,ËùÒÔ·Å¿í¼ì²âÌõ¼þÐèÒªµÄºÚµãÊý),ËµÃ÷ÓöÉÏÁËÉÏÁÏÇøÉ
+             -ÏÆÂÇ°µÄÄÇ¸öÐ¡Ê®×ÖÂ·¿ÚÇÒÁÙÊ±±êÖ¾Î»Ã»ÓÐÖÃÎ»(µÚÒ»´Î¼ì²âµ½Ê®×ÖÂ·¿Ú)
+ 116   4                  if (tmp_flag ==0 && (Tracing_Get_Black_Spot_Number() >= TRACING_ALL_BLACK_SPOT_NUMBER-2))
+ 117   4                  {
+ 118   5                      // ÉèÖÃÁÙÊ±±êÖ¾Î»ÖÃÎ»
+ 119   5                      tmp_flag = 1;
+ 120   5                      // ·äÃùÆ÷¶ÌÃù
+ 121   5                      Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+ 122   5      
+ 123   5                      // Çå¿ÕÁÙÊ±±êÖ¾Î»2
+ 124   5                      tmp_flag2 = 0;
+ 125   5                  }
+ 126   4      
+ 127   4                  // Èç¹ûÓöµ½ÁËÉÏÁÏÇøµÚÒ»¸öÍ£³µÎ»,ÇÒÊÇµÚÒ»´ÎÓöµ½
+ 128   4                  if (tmp_flag2==0 && SNR0 == 1 && SNR1 == 1)
+ 129   4                  {
+ 130   5                      // ÁÙÊ±±êÖ¾Î»ÖÃÎ»
+ 131   5                      tmp_flag2 = 1;
+ 132   5      
+ 133   5                      // ´ÓÏÖÔÚÆð±íÃ÷Ð¡³µÒÑ¾­ÔÚÉÏÁÏÇøÆ½Ì¨ÉÏÁË,Ð¡³µÔË¶¯ËÙ¶È¼õ°ë
+ 134   5                      Tracing_Set_Speed_Half();
+ 135   5      
+ 136   5                      // ·äÃùÆ÷¶ÌÃù
+ 137   5                      Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+ 138   5                    
+ 139   5                // Í£Ö¹Ñ°¼£»úÖÆ
+ 140   5              Tracing_Stop();
+ 141   5                    
+ 142   5                      // ¿ªÊ¼ÔËÐÐÐ¡³µµ¹ÍËÐÞÕý»úÖÆ
+ 143   5                      Motors_Break_Start();
+ 144   5                    
+ 145   5                      // ÇÐ»»×´Ì¬Îªµ±Ç°Ð¡³µ´¦ÓÚÉÏÁÏÇøµÚ1¸öÍ£³µÎ»
+ 146   5                      Task_Status = TASK_STATUS_LOADING_AREA_PARKING_SPACE_1;
+ 147   5      
+ 148   5                  }
+ 149   4              }
+ 150   3          else
+ 151   3          {
+ 152   4            // Èç¹û»¹ÔÚTask delayÖÐ,ËµÃ÷ÉÏÒ»×´Ì¬<<Æðµã´ý»ú>>ÖÐ×îºóÉèÖÃµÄdelayÊ±¼ä»¹Ã»µ½
+ 153   4            // ÔÚÕâÀïË³±ã³õÊ¼»¯Ò»ÏÂÁÙÊ±±êÖ¾Î»
+ 154   4            tmp_flag=0;
+ 155   4          }
+ 156   3          break;
+ 157   3          }
+ 158   2          // µ±Ç°Ð¡³µ´¦ÓÚÉÏÁÏÇøµÚ1¸öÍ£³µÎ»
+ 159   2          case TASK_STATUS_LOADING_AREA_PARKING_SPACE_1:
+ 160   2          {
+ 161   3              // Èç¹ûÐ¡³µµ¹ÍËÐÞÕý»úÖÆÒÑ¾­°ÑÐ¡³µÎ»ÖÃÐÞÕýÍê³É
+ 162   3              if (Motors_Break_Is_Ok())
+ 163   3              {
+ 164   4      #ifdef DEBUG
+ 165   4                  //printf("ÔÚÉÏÁÏÇø1³µÎ»\n");
+ 166   4      #endif
+ 167   4                  // ÇÐ»»×´Ì¬Îªµ±Ç°Ð¡³µ´¦ÓÚÉÏÁÏÇøµÚ1¸öÍ£³µÎ»ÉÏÖ´ÐÐ»úÐµÊÖ²Ù×÷
+ 168   4                  Task_Status = TASK_STATUS_LOADING_AREA_PARKING_SPACE_1_WORKING;
+ 169   4      
+ 170   4                  // È·±£ÁÙÊ±±êÖ¾Î»ÒÑ¾­±»Çå¿Õ
+ 171   4                  tmp_flag=0;
+ 172   4              }
+ 173   3      
+ 174   3              break;
+ 175   3          }
+C51 COMPILER V9.54   TASK                                                                  11/25/2018 07:39:08 PAGE 4   
+
+ 176   2      
+ 177   2          // µ±Ç°Ð¡³µ´¦ÓÚÉÏÁÏÇøµÚ1¸öÍ£³µÎ»ÉÏÖ´ÐÐ»úÐµÊÖ²Ù×÷
+ 178   2          case TASK_STATUS_LOADING_AREA_PARKING_SPACE_1_WORKING:
+ 179   2          {
+ 180   3      
+ 181   3              // Èç¹ûÊÇµÚÒ»´ÎÔËÐÐ±¾×´Ì¬,ÁÙÊ±±êÖ¾Î»»¹Ã»±»ÖÃÎ»
+ 182   3              if (tmp_flag == 0)
+ 183   3              {
+ 184   4                  // ÉèÖÃÒ»¸ö³¤Ê±¼äµÄdelayÀ´Ä£Äâ×¥È¡²Ù×÷
+ 185   4                  Task_Delay_Start(200);
+ 186   4      
+ 187   4                  // ·äÃùÆ÷¶ÌÃù
+ 188   4                  Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+ 189   4      
+ 190   4                  // ÁÙÊ±±êÖ¾Î»ÖÃÎ»
+ 191   4                  tmp_flag = 1;
+ 192   4              }
+ 193   3              // ÔÚÕâÀï×ö»úÐµ±ÛµÄ×¥È¡²Ù×÷
+ 194   3              
+ 195   3      
+ 196   3      
+ 197   3              if(Task_Delay_Is_Delay()==0)//if (»úÐµ±Û²Ù×÷Íê±Ï)
+ 198   3              {
+ 199   4                  // È·ÈÏ²Ù×÷Íê±Ïºó¿ªÆôÑ°¼£»úÖÆ
+ 200   4                  Tracing_Start();
+ 201   4      
+ 202   4                  // ÅÐ¶ÏÏÖÔÚSNR0ÒÔ¼°SNR1ÒÑ¾­Àë¿ªºÚÉ«(²»¿É¿¿,ÐèÒªÏÂÃæ¼Ódelay)
+ 203   4                  if (SNR0 == 0 && SNR1 == 0)
+ 204   4                  {
+ 205   5      
+ 206   5                      // ÑÓÊ±Ò»¶¨Ê±¼ä,È·±£ÏÂ´Î¼ì²âSNR0ÒÔ¼°SNR1µÄÊ±ºò³µ×ÓÒÑ¾­Àë¿ªµÚ1¸öÍ£³µÎ»µÄÁ½¸öÌØÕ÷Ð¡°ëÊ®×ÖÂ·¿
+             -Ú
+ 207   5                      Task_Delay_Start(TASK_OUT_PARKING_SPACE_SNR_CHECK_DELAY_TIME);
+ 208   5      #ifdef DEBUG
+ 209   5                      //printf("ÍùÉÏÁÏÇø2³µÎ»\n");
+ 210   5      #endif
+ 211   5                      // ÇÐ»»×´Ì¬Îªµ±Ç°Ð¡³µ´¦ÓÚÕýÔÚÇ°ÍùÉÏÁÏÇøµÚ2¸öÍ£³µÎ»µÄÂ·ÉÏ
+ 212   5                      Task_Status = TASK_STATUS_GOING_LOADING_AREA_PARKING_SPACE_2;
+ 213   5      
+ 214   5                      // È·±£ÁÙÊ±±êÖ¾Î»ÒÑ¾­±»Çå¿Õ
+ 215   5                      tmp_flag = 0;
+ 216   5                  }
+ 217   4              }
+ 218   3              break;
+ 219   3          }
+ 220   2          //µ±Ç°Ð¡³µ´¦ÓÚÕýÔÚÇ°ÍùÉÏÁÏÇøµÚ2¸öÍ£³µÎ»µÄÂ·ÉÏ
+ 221   2          case TASK_STATUS_GOING_LOADING_AREA_PARKING_SPACE_2:
+ 222   2          {
+ 223   3              // Èç¹ûÏÖÔÚSNRÑÓÊ±¼ì²âµÄDelayÊ±¼äÒÑ¾­¹ýÁË
+ 224   3              if (Task_Delay_Is_Delay()==0)
+ 225   3              {
+ 226   4                  // Èç¹ûÓöÉÏÉÏÁÏÇøµÄµÚ¶þ¸öÍ£³µÎ»,ÇÒÊÇµÚÒ»´ÎÓöÉÏ
+ 227   4                  if (tmp_flag ==0 && SNR0 == 1 && SNR1 == 1)
+ 228   4                  {
+ 229   5                      // ÁÙÊ±±êÖ¾Î»ÖÃÎ»
+ 230   5                      tmp_flag = 1;
+ 231   5      
+ 232   5                      // ·äÃùÆ÷¶ÌÃù
+ 233   5                      Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+ 234   5      
+ 235   5                      // Í£Ö¹Ñ°¼£»úÖÆ
+ 236   5                    Tracing_Stop();
+C51 COMPILER V9.54   TASK                                                                  11/25/2018 07:39:08 PAGE 5   
+
+ 237   5                      
+ 238   5                      // ¿ªÊ¼ÔËÐÐÐ¡³µµ¹ÍËÐÞÕý»úÖÆ
+ 239   5                      Motors_Break_Start();
+ 240   5      #ifdef DEBUG
+ 241   5                      //printf("´¦ÓÚÉÏÁÏÇø2³µÎ»\n");
+ 242   5      #endif
+ 243   5                      // ÇÐ»»×´Ì¬Îªµ±Ç°Ð¡³µ´¦ÓÚÉÏÁÏÇøµÚ2¸öÍ£³µÎ»
+ 244   5                      Task_Status = TASK_STATUS_LOADING_AREA_PARKING_SPACE_2;
+ 245   5      
+ 246   5                      // È·±£ÁÙÊ±±êÖ¾Î»ÒÑ¾­±»Çå¿Õ
+ 247   5                      tmp_flag = 0;
+ 248   5                  }
+ 249   4              }
+ 250   3              else
+ 251   3              {
+ 252   4                  // ³ÃSNRÑÓÊ±¼ì²âdelayÊ±¼ä»¹Î´½áÊø,Çå¿ÕÁ½¸öÁÙÊ±±êÖ¾Î»
+ 253   4                  tmp_flag = 0;
+ 254   4                  tmp_flag2 = 0;
+ 255   4              }
+ 256   3              break;
+ 257   3          }
+ 258   2      
+ 259   2          // µ±Ç°Ð¡³µ´¦ÓÚÉÏÁÏÇøµÚ2¸öÍ£³µÎ»
+ 260   2          case TASK_STATUS_LOADING_AREA_PARKING_SPACE_2:
+ 261   2          {
+ 262   3              // Èç¹ûÐ¡³µµ¹ÍËÐÞÕý»úÖÆÒÑ¾­°ÑÐ¡³µÎ»ÖÃÐÞÕýÍê³É
+ 263   3              if (Motors_Break_Is_Ok())
+ 264   3              {
+ 265   4      
+ 266   4                  // ÇÐ»»×´Ì¬Îªµ±Ç°Ð¡³µ´¦ÓÚÉÏÁÏÇøµÚ2¸öÍ£³µÎ»ÉÏÖ´ÐÐ»úÐµÊÖ²Ù×÷
+ 267   4                  Task_Status = TASK_STATUS_LOADING_AREA_PARKING_SPACE_2_WORKING;
+ 268   4      
+ 269   4                  // È·±£ÁÙÊ±±êÖ¾Î»ÒÑ¾­±»Çå¿Õ
+ 270   4                  tmp_flag = 0;
+ 271   4              }
+ 272   3      
+ 273   3              break;
+ 274   3          }
+ 275   2      
+ 276   2          // µ±Ç°Ð¡³µ´¦ÓÚÉÏÁÏÇøµÚ2¸öÍ£³µÎ»ÉÏÖ´ÐÐ»úÐµÊÖ²Ù×÷
+ 277   2          case TASK_STATUS_LOADING_AREA_PARKING_SPACE_2_WORKING:
+ 278   2          {
+ 279   3      
+ 280   3              // Èç¹ûÊÇµÚÒ»´ÎÔËÐÐ±¾×´Ì¬,ÁÙÊ±±êÖ¾Î»»¹Ã»±»ÖÃÎ»
+ 281   3              if (tmp_flag == 0)
+ 282   3              {
+ 283   4                  // ÉèÖÃÒ»¸ö³¤Ê±¼äµÄdelayÀ´Ä£Äâ×¥È¡²Ù×÷
+ 284   4                  Task_Delay_Start(200);
+ 285   4      
+ 286   4                  // ·äÃùÆ÷¶ÌÃù
+ 287   4                  Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+ 288   4      
+ 289   4                  // ÁÙÊ±±êÖ¾Î»ÖÃÎ»
+ 290   4                  tmp_flag = 1;
+ 291   4              }
+ 292   3      
+ 293   3      
+ 294   3      
+ 295   3              if (Task_Delay_Is_Delay() == 0)//if (»úÐµ±Û²Ù×÷Íê±Ï)
+ 296   3              {
+ 297   4                  // »Ö¸´Ñ°¼£µÄËÙ¶ÈÂúËÙ
+ 298   4                  Tracing_Set_Speed_All();
+C51 COMPILER V9.54   TASK                                                                  11/25/2018 07:39:08 PAGE 6   
+
+ 299   4                  
+ 300   4                  // È·ÈÏ²Ù×÷Íê±Ïºó¿ªÆôÑ°¼£»úÖÆ
+ 301   4                  Tracing_Start();
+ 302   4      
+ 303   4                  // ÅÐ¶ÏÏÖÔÚSNR0ÒÔ¼°SNR1ÒÑ¾­Àë¿ªºÚÉ«(²»¿É¿¿,ÐèÒªÏÂÃæ¼Ódelay)
+ 304   4                  if (SNR0 == 0 && SNR1 == 0)
+ 305   4                  {
+ 306   5                      // ·äÃùÆ÷¶ÌÃù
+ 307   5                      Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+ 308   5      
+ 309   5                      // ÑÓÊ±Ò»¶¨Ê±¼ä,È·±£ÏÂ´Î¼ì²âÊ®×ÖÂ·¿ÚµÄÊ±ºò²»»áÒòÎªÏÂÆÂÊ±³µÌå×ËÌ¬²»Õý¶øµ¼ÖÂÎóÊ¶±ð
+ 310   5                      Task_Delay_Start(TASK_OUT_LOADING_AREA_CROSS_ROADS_CHECK_DELAY_TIME);
+ 311   5      #ifdef DEBUG
+ 312   5                      //printf("ÍË³öÉÏÁÏÇø\n");
+ 313   5      #endif
+ 314   5                      // ÇÐ»»×´Ì¬Îªµ±Ç°Ð¡³µ´¦ÓÚÍË³öÉÏÁÏÇø×´Ì¬
+ 315   5                      Task_Status = TASK_STATUS_OUT_LOADING_AREA;
+ 316   5      
+ 317   5                      // È·±£ÁÙÊ±±êÖ¾Î»ÒÑ¾­±»Çå¿Õ
+ 318   5                      tmp_flag = 0;
+ 319   5                  }
+ 320   4              }
+ 321   3              break;
+ 322   3          }
+ 323   2      
+ 324   2          // µ±Ç°Ð¡³µ´¦ÓÚÍË³öÉÏÁÏÇø×´Ì¬
+ 325   2          case TASK_STATUS_OUT_LOADING_AREA:
+ 326   2          {
+ 327   3              /*
+ 328   3              // Èç¹ûÏÖÔÚÊ®×ÖÂ·¿ÚÑÓÊ±¼ì²âµÄDelayÊ±¼äÒÑ¾­¹ýÁË
+ 329   3              if (Task_Delay_Is_Delay() == 0)
+ 330   3              {
+ 331   3                  // Èç¹û¼ì²âµ½È«ºÚµÄÊ®×ÖÂ·¿Ú,¶øÇÒÊÇµÚÒ»´Î¼ì²âµ½,ËµÃ÷ÓöÉÏÁË±ÜÕÏÇøÇ°ÃæµÄÄÇ¸ö´óÊ®×ÖÂ·¿Ú
+ 332   3                  if (tmp_flag == 0 && Tracing_Get_Black_Spot_Number() >= TRACING_ALL_BLACK_SPOT_NUMBER)
+ 333   3                  {
+ 334   3                      tmp_flag = 1;
+ 335   3                  }
+ 336   3                  
+ 337   3                  // Èç¹ûÖ®Ç°¼ì²âµ½¹ýÊ®×ÖÂ·¿Ú,¶øÏÖÔÚ8Â·»Ò¶È´«¸ÐÆ÷Ñ¹µ½µÄºÚµãÊýÁ¿ºÜÉÙ
+ 338   3                  if (tmp_flag == 1 && Tracing_Get_Black_Spot_Number() <= TRACING_ALL_BLACK_SPOT_NUMBER-2)
+ 339   3                  {
+ 340   3                      printf("½øÕÏ°­Çø\n");
+ 341   3      
+ 342   3                      // ÇÐ»»×´Ì¬Îªµ±Ç°Ð¡³µ½øÈëÕÏ°­Çø
+ 343   3                      Task_Status = TASK_STATUS_IN_OBSTACLE_AREA;
+ 344   3      
+ 345   3                      // Çå¿ÕÁÙÊ±±êÖ¾Î»
+ 346   3                      tmp_flag = 0;
+ 347   3      
+ 348   3                      // ·äÃùÆ÷¶ÌÃù
+ 349   3                      Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+ 350   3                  }
+ 351   3              }
+ 352   3              else
+ 353   3              {
+ 354   3                  // Èç¹ûÊ®×ÖÂ·¿ÚÑÓÊ±¼ì²âdelayÊ±¼ä»¹Ã»½áÊø
+ 355   3      
+ 356   3                  // °ÑÁ½¸öÁÙÊ±±êÖ¾Î»ÏÈÇåµô
+ 357   3                  tmp_flag = 0;
+ 358   3                  tmp_flag2 = 0;
+ 359   3      
+ 360   3              }
+C51 COMPILER V9.54   TASK                                                                  11/25/2018 07:39:08 PAGE 7   
+
+ 361   3              
+ 362   3              */
+ 363   3              break;
+ 364   3          }
+ 365   2      
+ 366   2          // Ð¡³µ½øÈëÕÏ°­Çø
+ 367   2          case TASK_STATUS_IN_OBSTACLE_AREA:
+ 368   2          {
+ 369   3      
+ 370   3              break;
+ 371   3          }
+ 372   2      
+ 373   2        }
+ 374   1      }// End of void Task_Timer_Handle(void)
+ 375          
+ 376          
+ 377          /******************* (C) COPYRIGHT 2018 ³ÂËÕÑô *****END OF FILE******************/
+ 378          
+ 379          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    369    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

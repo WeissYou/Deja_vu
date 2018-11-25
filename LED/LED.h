@@ -1,17 +1,20 @@
 /******************** (C) COPYRIGHT 2018 ³ÂËÕÑô **********************************
-* File Name          :  motor.h
+* File Name          :  LED.h
 * Author             :  ³ÂËÕÑô
 * CPU Type           :  STC15
 * IDE                :  IAR 8.22.1
 * Version            :  V1.0
-* Date               :  24/11/2018
-* Description        :  
+* Date               :  25/11/2018
+* Description        :  LED
 *******************************************************************************/
 
 
+
+
+
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MOTOR_H
-#define  __MOTOR_H
+#ifndef __LED_H
+#define  __LED_H
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -26,13 +29,17 @@
 
 
 /* Private function prototypes -----------------------------------------------*/
-void Motors_stop(void);
-void MotorL_setting_auto_dir(char speed);
-void MotorR_setting_auto_dir(char speed);
+void LED_Init(void);
 
-#endif /* __MOTOR_H */
+void W_LED_ON(void);
+void W_LED_OFF(void);
+void G_LED_ON(void);
+void G_LED_OFF(void);
+#endif /* __LED_H */
+
+
+
 
 
 
 /******************* (C) COPYRIGHT 2018 ³ÂËÕÑô *****END OF FILE******************/
-

@@ -1,11 +1,11 @@
-C51 COMPILER V9.59.0.0   GLOBAL                                                            11/23/2018 19:11:29 PAGE 1   
+C51 COMPILER V9.54   GLOBAL                                                                11/25/2018 07:37:21 PAGE 1   
 
 
-C51 COMPILER V9.59.0.0, COMPILATION OF MODULE GLOBAL
+C51 COMPILER V9.54, COMPILATION OF MODULE GLOBAL
 OBJECT MODULE PLACED IN Global.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Global\Global.c OPTIMIZE(8,SPEED) INCDIR(.\ADC;.\Deja_vu;.\Global;.\inte
-                    -rrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors) DEBUG OBJECTEXTEND PRINT(.\Global.lst) TABS(2) OBJECT(Global.ob
-                    -j)
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Global\Global.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global
+                    -;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXTEND P
+                    -RINT(.\Global.lst) TABS(2) OBJECT(Global.obj)
 
 line level    source
 
@@ -21,50 +21,49 @@ line level    source
   10          uchar adc[8];          //ADC原始数据存放数组
   11          uchar daten;           //处理后数据
   12          uchar p1[8];           //处理后数据存放数组
-  13          uchar flag = 0;            //某标志位
-  14          bit busy;              //串口忙碌标志    
-  15          
-  16          /***** 全局函数 *****/                       
-  17          void GPIO_init(void)      
-  18          {
-  19   1          P0M0 = 0x00;
-  20   1          P0M1 = 0x00;
-  21   1          P1M0 = 0x00;        
-  22   1          P1M1 = 0x00;
-  23   1          P2M0 = 0x00;
-  24   1          P2M1 = 0x00;
-  25   1          P3M0 = 0x00;
-  26   1          P3M1 = 0x00;
-  27   1          P4M0 = 0x00;
-  28   1          P4M1 = 0x00;
-  29   1      }
-  30          
-  31          /*----------------------------
-  32          软件延时
-  33          ----------------------------*/
-  34          void Delay(uint n)  //延时n毫秒
-  35          {
-  36   1          uint x;
-  37   1      
-  38   1          while (n--)
-  39   1          {
-  40   2              x = 5000;
-  41   2              while (x--);
-  42   2          }
-  43   1      }
+  13          bit busy;              //串口忙碌标志    
+  14          
+  15          /***** 全局函数 *****/                       
+  16          void GPIO_init(void)      
+  17          {
+  18   1          P0M0 = 0x00;
+  19   1          P0M1 = 0x00;
+  20   1          P1M0 = 0x00;        
+  21   1          P1M1 = 0x00;
+  22   1          P2M0 = 0x00;
+  23   1          P2M1 = 0x00;
+  24   1          P3M0 = 0x00;
+  25   1          P3M1 = 0x00;
+  26   1          P4M0 = 0x00;
+  27   1          P4M1 = 0x00;
+  28   1      }
+  29          
+  30          /*----------------------------
+  31          软件延时
+  32          ----------------------------*/
+  33          void Delay(uint n)  //延时n毫秒
+  34          {
+  35   1          uint x;
+  36   1      
+  37   1          while (n--)
+  38   1          {
+  39   2              x = 5000;
+  40   2              while (x--);
+  41   2          }
+  42   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     49    ----
+   CODE SIZE        =     63    ----
    CONSTANT SIZE    =      8    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     22    ----
+   DATA SIZE        =     21       4
    IDATA SIZE       =   ----    ----
    BIT SIZE         =      1    ----
-C51 COMPILER V9.59.0.0   GLOBAL                                                            11/23/2018 19:11:29 PAGE 2   
-
 END OF MODULE INFORMATION.
+
+C51 COMPILER V9.54   GLOBAL                                                                11/25/2018 07:37:21 PAGE 2   
 
 
 C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

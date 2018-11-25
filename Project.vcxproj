@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -53,18 +53,26 @@
   <ItemGroup>
     <ClCompile Include="ADC\ADC.c" />
     <ClInclude Include="ADC\ADC.h" />
+    <ClCompile Include="Buzzer\Buzzer.c" />
     <ClCompile Include="Deja_vu\Deja_vu.c" />
+    <ClInclude Include="Buzzer\Buzzer.h" />
     <ClInclude Include="Deja_vu\Deja_vu.h" />
     <ClCompile Include="Global\Global.c" />
     <ClInclude Include="Global\Global.h" />
     <ClCompile Include="interrupt\interrupt.c" />
     <ClInclude Include="interrupt\interrupt.h" />
+    <ClCompile Include="LED\LED.c" />
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Motor\Motor.c" />
+    <ClInclude Include="LED\LED.h" />
     <ClInclude Include="Motor\motor.h" />
+    <ClCompile Include="Motor\Motors_Break.c" />
     <ClCompile Include="PWM\PWM.c" />
+    <ClInclude Include="Motor\Motors_Break.h" />
     <ClInclude Include="PWM\pwm.h" />
+    <ClCompile Include="Task\Task.c" />
     <ClCompile Include="Timer\timer.c" />
+    <ClInclude Include="Task\Task.h" />
     <ClInclude Include="Timer\timer.h" />
     <ClCompile Include="USART\USART.c" />
     <ClInclude Include="USART\USART.h" />
