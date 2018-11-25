@@ -29,7 +29,7 @@ void Delay(uint n);          //延时n毫秒
 
 
 // 8路寻迹传感器压中多少黑点即可认为是压中全黑
-#define TRACING_ALL_BLACK_SPOT_NUMBER   7       // 设置为压中7个黑点就认为是压中十字路口
+#define TRACING_ALL_BLACK_SPOT_NUMBER   8       // 设置为压中7个黑点就认为是压中十字路口
 
 
 // 蜂鸣器短鸣时间
@@ -41,11 +41,11 @@ void Delay(uint n);          //延时n毫秒
 
 
 // 小车离开一个停车位后重新开始SNR0以及SNR1变黑检测的延时时间
-#define TASK_OUT_PARKING_SPACE_SNR_CHECK_DELAY_TIME 10  // 设置小车从一个停车位到下一个停车位的过程中,开始寻迹后SNR检测的延迟开始时间为10定时器中断周期
+#define TASK_OUT_PARKING_SPACE_SNR_CHECK_DELAY_TIME 15  // 设置小车从一个停车位到下一个停车位的过程中,开始寻迹后SNR检测的延迟开始时间为15定时器中断周期
 
 
 // 小车在上料区离开第二个停车位后到开启8路灰度传感器检测全黑之间的延时(增加这个延时是为了防止在下坡过程中导致8路灰度传感器误识别十字路口)
-#define TASK_OUT_LOADING_AREA_CROSS_ROADS_CHECK_DELAY_TIME  60  // 设置小车上料区第二个停车点的SNR检测为白色后到开启十字路口识别之间的延时为60个定时器中断周期
+#define TASK_OUT_LOADING_AREA_CROSS_ROADS_CHECK_DELAY_TIME  20  // 设置小车上料区第二个停车点的SNR检测为白色后到开启十字路口识别之间的延时为20个定时器中断周期
 
 
 
@@ -64,6 +64,23 @@ void Delay(uint n);          //延时n毫秒
 
 // 黄灯
 #define Y_LED_PIN P50
+
+
+// 8颗LED
+#define LED_LINE_0 P21
+#define LED_LINE_1 P34
+#define LED_LINE_2 P35
+#define LED_LINE_3 P36
+#define LED_LINE_4 P37
+#define LED_LINE_5 P55
+#define LED_LINE_6 P54
+#define LED_LINE_7 P53
+
+
+// 两颗LED
+#define SIDE_LED_0 P26
+#define SIDE_LED_1 P27
+
 
 //L298相关引脚
 #define IN1	P24

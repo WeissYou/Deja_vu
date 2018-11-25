@@ -1,9 +1,9 @@
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 1   
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE DEJA_VU
 OBJECT MODULE PLACED IN Deja_vu.obj
-COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Deja_vu\Deja_vu.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Glob
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Deja_vu\Deja_vu.c OPTIMIZE(0,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Glob
                     -al;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXTEND
                     - PRINT(.\Deja_vu.lst) TABS(2) OBJECT(Deja_vu.obj)
 
@@ -32,7 +32,7 @@ line level    source
   21          #include "LED.h"
   22          /* Private define ------------------------------------------------------------*/
   23          volatile unsigned char half_speed_flag=0;                // 半速标志位
-  24          
+  24          volatile unsigned char Tracing_All_White_Stop_Flag = 0;  // 全白停车标志位
   25          /* Private typedef -----------------------------------------------------------*/
   26          
   27          
@@ -53,477 +53,531 @@ line level    source
   42          {
   43   1          // 设置寻迹机制的状态为正在运行
   44   1          Tracing_status = TRACING_STATUS_STATUS_RUNING;
-  45   1      }// End of void Tracing_Start(void)
-  46          
-  47          /*******************************************************************************
-  48          *                           陈苏阳@2018-11-25
-  49          * Function Name  :  Tracing_Set_Speed_Half
-  50          * Description    :  设置寻迹的速度为半速
-  51          * Input          :  None
-  52          * Output         :  None
-  53          * Return         :  None
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 2   
+  45   1      
+  46   1          // 两个轮子都先给个速度
+  47   1          MotorL_setting_auto_dir(10);
+  48   1          MotorR_setting_auto_dir(10);
+  49   1      
+  50   1      }// End of void Tracing_Start(void)
+  51          
+  52          /*******************************************************************************
+  53          *                           陈苏阳@2018-11-25
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 2   
 
-  54          *******************************************************************************/
-  55          void Tracing_Set_Speed_Half(void)
-  56          {
-  57   1          half_speed_flag = 1;
-  58   1      }// End of void Tracing_Set_Speed_Half(void)
-  59          
-  60          
-  61           /*******************************************************************************
-  62           *                           陈苏阳@2018-11-25
-  63           * Function Name  :  Tracing_Set_Speed_All
-  64           * Description    :  设置寻迹的速度为全速
-  65           * Input          :  None
-  66           * Output         :  None
-  67           * Return         :  None
-  68           *******************************************************************************/
-  69          void Tracing_Set_Speed_All(void)
-  70          {
-  71   1          half_speed_flag = 0;
-  72   1      }// End of void Tracing_Set_Speed_All(void)
-  73          
-  74           /*******************************************************************************
-  75           *                           陈苏阳@2018-11-24
-  76           * Function Name  :  Tracing_Stop
-  77           * Description    :  停止寻迹机制
-  78           * Input          :  None
-  79           * Output         :  None
-  80           * Return         :  None
-  81           *******************************************************************************/
-  82          void Tracing_Stop(void)
-  83          {
-  84   1          // 设置寻迹机制的状态为处于空闲状态
-  85   1          Tracing_status = TRACING_STATUS_STATUS_IDLE;
-  86   1      
-  87   1          // 停止电机
-  88   1          Motors_stop();
-  89   1      
-  90   1          //PWM设定生效
-  91   1          pwms_enable();         
-  92   1      }// End of void Tracing_Stop(void)
-  93          
-  94          
-  95          /*******************************************************************************
-  96          *                           陈苏阳@2018-11-24
-  97          * Function Name  :  Tracing_Get_Black_Spot_Number
-  98          * Description    :  获取8路寻迹传感器压中黑点的个数
-  99          * Input          :  None
- 100          * Output         :  None
- 101          * Return         :  None
- 102          *******************************************************************************/
- 103          unsigned char Tracing_Get_Black_Spot_Number(void)
- 104          {
- 105   1          unsigned char number_cnt=0;           // 黑点计数
- 106   1          unsigned char i = 0;
- 107   1          for (i = 0; i < 8; i++)
- 108   1          {
- 109   2              // 如果当前点为黑点
- 110   2              if (situation&(0x01 << i))
- 111   2              {
- 112   3                  // 黑点个数++
- 113   3                  number_cnt++;
- 114   3              }
- 115   2          }
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 3   
+  54          * Function Name  :  Tracing_Set_Speed_Half
+  55          * Description    :  设置寻迹的速度为半速
+  56          * Input          :  None
+  57          * Output         :  None
+  58          * Return         :  None
+  59          *******************************************************************************/
+  60          void Tracing_Set_Speed_Half(void)
+  61          {
+  62   1          half_speed_flag = 1;
+  63   1      }// End of void Tracing_Set_Speed_Half(void)
+  64          
+  65          
+  66          /*******************************************************************************
+  67          *                           陈苏阳@2018-11-25
+  68          * Function Name  :  Tracing_Enable_All_White_Stop
+  69          * Description    :  使能全白停车功能
+  70          * Input          :  None
+  71          * Output         :  None
+  72          * Return         :  None
+  73          *******************************************************************************/
+  74          void Tracing_Enable_All_White_Stop(void)
+  75          {
+  76   1          Tracing_All_White_Stop_Flag = 1;
+  77   1      }// End of void Tracing_Enable_All_White_Stop(void)
+  78          
+  79          /*******************************************************************************
+  80          *                           陈苏阳@2018-11-25
+  81          * Function Name  :  Tracing_Disnable_All_White_Stop
+  82          * Description    :  失能全白停车功能
+  83          * Input          :  None
+  84          * Output         :  None
+  85          * Return         :  None
+  86          *******************************************************************************/
+  87          void Tracing_Disnable_All_White_Stop(void)
+  88          {
+  89   1          Tracing_All_White_Stop_Flag = 0;
+  90   1      }// End of void Tracing_Disnable_All_White_Stop(void)
+  91          
+  92           /*******************************************************************************
+  93           *                           陈苏阳@2018-11-25
+  94           * Function Name  :  Tracing_Set_Speed_All
+  95           * Description    :  设置寻迹的速度为全速
+  96           * Input          :  None
+  97           * Output         :  None
+  98           * Return         :  None
+  99           *******************************************************************************/
+ 100          void Tracing_Set_Speed_All(void)
+ 101          {
+ 102   1          half_speed_flag = 0;
+ 103   1      }// End of void Tracing_Set_Speed_All(void)
+ 104          
+ 105           /*******************************************************************************
+ 106           *                           陈苏阳@2018-11-24
+ 107           * Function Name  :  Tracing_Stop
+ 108           * Description    :  停止寻迹机制
+ 109           * Input          :  None
+ 110           * Output         :  None
+ 111           * Return         :  None
+ 112           *******************************************************************************/
+ 113          void Tracing_Stop(void)
+ 114          {
+ 115   1          // 设置寻迹机制的状态为处于空闲状态
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 3   
 
- 116   1          return number_cnt;
- 117   1      }// End of unsigned char Tracing_Get_Black_Spot_Number(void)
- 118          
- 119          
- 120          
- 121          /*******************************************************************************
- 122          *                           陈苏阳@2018-11-24
- 123          * Function Name  :  Tracing_Timer_Handle
- 124          * Description    :  寻迹定时器处理函数
- 125          * Input          :  None
- 126          * Output         :  None
- 127          * Return         :  None
- 128          *******************************************************************************/
- 129          void Tracing_Timer_Handle(void)
- 130          {
- 131   1          // 如果当前寻迹机制处于运行状态
- 132   1          if (Tracing_status == TRACING_STATUS_STATUS_RUNING)
- 133   1          {
- 134   2              G_LED_ON();
- 135   2              switch (situation)
- 136   2              {
- 137   3                
- 138   3                  //起动
- 139   3              case 255:         //1111 1111
- 140   3              {
- 141   4                  // 如果是半速
- 142   4                  if (half_speed_flag)
- 143   4                  {
- 144   5                      MotorL_setting_auto_dir(100/2);
- 145   5                      MotorR_setting_auto_dir(100/2);
- 146   5                  }
- 147   4                  else
- 148   4                  {
- 149   5                      MotorL_setting_auto_dir(100);
- 150   5                      MotorR_setting_auto_dir(100);
- 151   5                  }
- 152   4                  break;
- 153   4              }
- 154   3      
- 155   3              //停止
- 156   3      
- 157   3              case 0:
- 158   3              {
- 159   4                  Motors_stop();
- 160   4                  break;
- 161   4              }
- 162   3      
- 163   3              //直行中调整
- 164   3              //4灯情况
- 165   3              case 60:          //0011 1100
- 166   3              {
- 167   4                  // 如果是半速
- 168   4                  if (half_speed_flag)
- 169   4                  {
- 170   5                      MotorL_setting_auto_dir(100/2);
- 171   5                      MotorR_setting_auto_dir(100/2);
- 172   5                  }
- 173   4                  else
+ 116   1          Tracing_status = TRACING_STATUS_STATUS_IDLE;
+ 117   1      
+ 118   1          // 停止电机
+ 119   1          Motors_stop();
+ 120   1      
+ 121   1          //PWM设定生效
+ 122   1          pwms_enable();         
+ 123   1      }// End of void Tracing_Stop(void)
+ 124          
+ 125          
+ 126          /*******************************************************************************
+ 127          *                           陈苏阳@2018-11-24
+ 128          * Function Name  :  Tracing_Get_Black_Spot_Number
+ 129          * Description    :  获取8路寻迹传感器压中黑点的个数
+ 130          * Input          :  None
+ 131          * Output         :  None
+ 132          * Return         :  None
+ 133          *******************************************************************************/
+ 134          unsigned char Tracing_Get_Black_Spot_Number(void)
+ 135          {
+ 136   1          unsigned char number_cnt=0;           // 黑点计数
+ 137   1          unsigned char i = 0;
+ 138   1          for (i = 0; i < 8; i++)
+ 139   1          {
+ 140   2              // 如果当前点为黑点
+ 141   2              if (situation&(0x01 << i))
+ 142   2              {
+ 143   3                  // 黑点个数++
+ 144   3                  number_cnt++;
+ 145   3              }
+ 146   2          }
+ 147   1          return number_cnt;
+ 148   1      }// End of unsigned char Tracing_Get_Black_Spot_Number(void)
+ 149          
+ 150          
+ 151          
+ 152          /*******************************************************************************
+ 153          *                           陈苏阳@2018-11-24
+ 154          * Function Name  :  Tracing_Timer_Handle
+ 155          * Description    :  寻迹定时器处理函数
+ 156          * Input          :  None
+ 157          * Output         :  None
+ 158          * Return         :  None
+ 159          *******************************************************************************/
+ 160          void Tracing_Timer_Handle(void)
+ 161          {
+ 162   1          // 如果当前寻迹机制处于运行状态
+ 163   1          if (Tracing_status == TRACING_STATUS_STATUS_RUNING)
+ 164   1          {
+ 165   2              G_LED_ON();
+ 166   2              switch (situation)
+ 167   2              {
+ 168   3                
+ 169   3                  //起动
+ 170   3              case 255:         //1111 1111
+ 171   3              {
+ 172   4                  // 如果是半速
+ 173   4                  if (half_speed_flag)
  174   4                  {
- 175   5                      MotorL_setting_auto_dir(100);
- 176   5                      MotorR_setting_auto_dir(100);
+ 175   5                      MotorL_setting_auto_dir(50/2);
+ 176   5                      MotorR_setting_auto_dir(50/2);
  177   5                  }
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 4   
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 4   
 
- 178   4                  break;
- 179   4              }
- 180   3              case 30:            //0001 1110
- 181   3              {
- 182   4                  // 如果是半速
- 183   4                  if (half_speed_flag)
- 184   4                  {
- 185   5                      MotorL_setting_auto_dir(100/2);
- 186   5                      MotorR_setting_auto_dir(50/2);
- 187   5                  }
- 188   4                  else
- 189   4                  {
- 190   5                      MotorL_setting_auto_dir(100);
- 191   5                      MotorR_setting_auto_dir(50);
- 192   5                  }
- 193   4                  break;
- 194   4              }
- 195   3              case 120:         //0111 1000
- 196   3              {
- 197   4                  // 如果是半速
- 198   4                  if (half_speed_flag)
- 199   4                  {
- 200   5                      MotorL_setting_auto_dir(50/2);
- 201   5                      MotorR_setting_auto_dir(100/2);
- 202   5                  }
- 203   4                  else
- 204   4                  {
- 205   5                      MotorL_setting_auto_dir(50);
- 206   5                      MotorR_setting_auto_dir(100);
- 207   5                  }
- 208   4              }
- 209   3      
- 210   3              //3灯情况 
- 211   3              case 28:                  //0001 1100
- 212   3              {
- 213   4                  // 如果是半速
- 214   4                  if (half_speed_flag)
- 215   4                  {
- 216   5                      MotorL_setting_auto_dir(100 / 2);
- 217   5                      MotorR_setting_auto_dir(80 / 2);
- 218   5                  }
- 219   4                  else
- 220   4                  {
- 221   5                      MotorL_setting_auto_dir(100);
- 222   5                      MotorR_setting_auto_dir(80);
- 223   5                  }
- 224   4                  break;
- 225   4              }
- 226   3              case 56:                //0011 1000
- 227   3              {
- 228   4                  // 如果是半速
- 229   4                  if (half_speed_flag)
- 230   4                  {
- 231   5                      MotorL_setting_auto_dir(80 / 2);
- 232   5                      MotorR_setting_auto_dir(100 / 2);
- 233   5                  }
- 234   4                  else
- 235   4                  {
- 236   5                      MotorL_setting_auto_dir(80);
- 237   5                      MotorR_setting_auto_dir(100);
- 238   5                  }
- 239   4                  break;
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 5   
+ 178   4                  else
+ 179   4                  {
+ 180   5                      MotorL_setting_auto_dir(50);
+ 181   5                      MotorR_setting_auto_dir(50);
+ 182   5                  }
+ 183   4                  break;
+ 184   4              }
+ 185   3      
+ 186   3              //停止
+ 187   3      
+ 188   3              case 0:
+ 189   3              {
+ 190   4                  // 如果全白停车标志位被置位,则PWM给0
+ 191   4                  if (Tracing_All_White_Stop_Flag)
+ 192   4                  {
+ 193   5                      MotorL_setting_auto_dir(0);
+ 194   5                      MotorR_setting_auto_dir(0);
+ 195   5                    
+ 196   5                  }
+ 197   4                  else
+ 198   4                  {
+ 199   5                      // 如果是半速
+ 200   5                      if (half_speed_flag)
+ 201   5                      {
+ 202   6                          MotorL_setting_auto_dir(50 / 2);
+ 203   6                          MotorR_setting_auto_dir(50 / 2);
+ 204   6                      }
+ 205   5                      else
+ 206   5                      {
+ 207   6                          MotorL_setting_auto_dir(50);
+ 208   6                          MotorR_setting_auto_dir(50);
+ 209   6                      }
+ 210   5                  }
+ 211   4                  
+ 212   4                  break;
+ 213   4              }
+ 214   3      
+ 215   3              //直行中调整
+ 216   3              //4灯情况
+ 217   3              case 60:          //0011 1100
+ 218   3              {
+ 219   4                  // 如果是半速
+ 220   4                  if (half_speed_flag)
+ 221   4                  {
+ 222   5                      MotorL_setting_auto_dir(100/2);
+ 223   5                      MotorR_setting_auto_dir(100/2);
+ 224   5                  }
+ 225   4                  else
+ 226   4                  {
+ 227   5                      MotorL_setting_auto_dir(100);
+ 228   5                      MotorR_setting_auto_dir(100);
+ 229   5                  }
+ 230   4                  break;
+ 231   4              }
+ 232   3              case 30:            //0001 1110
+ 233   3              {
+ 234   4                  // 如果是半速
+ 235   4                  if (half_speed_flag)
+ 236   4                  {
+ 237   5                      MotorL_setting_auto_dir(100/2);
+ 238   5                      MotorR_setting_auto_dir(50/2);
+ 239   5                  }
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 5   
 
- 240   4              }
- 241   3              case 14:              //0000 1110
- 242   3              {
- 243   4                  // 如果是半速
- 244   4                  if (half_speed_flag)
- 245   4                  {
- 246   5                      MotorL_setting_auto_dir(100/2);
- 247   5                      MotorR_setting_auto_dir(40/2);
- 248   5                  }
- 249   4                  else
- 250   4                  {
- 251   5                      MotorL_setting_auto_dir(100);
- 252   5                      MotorR_setting_auto_dir(40);
- 253   5                  }
- 254   4                  break;
- 255   4              }
- 256   3              case 112:             //0111 0000
- 257   3              {
- 258   4                  // 如果是半速
- 259   4                  if (half_speed_flag)
- 260   4                  {
- 261   5                      MotorL_setting_auto_dir(40/2);
- 262   5                      MotorR_setting_auto_dir(100/2);
- 263   5                  }
- 264   4                  else
- 265   4                  {
- 266   5                      MotorL_setting_auto_dir(40);
- 267   5                      MotorR_setting_auto_dir(100);
- 268   5                  }
- 269   4                  break;
- 270   4              }
- 271   3      
- 272   3              //2灯情况
- 273   3              case 18:                //0001 1000
- 274   3              {
- 275   4                  // 如果是半速
- 276   4                  if (half_speed_flag)
- 277   4                  {
- 278   5                      MotorL_setting_auto_dir(100/2);
- 279   5                      MotorR_setting_auto_dir(100/2);
- 280   5                  }
- 281   4                  else
+ 240   4                  else
+ 241   4                  {
+ 242   5                      MotorL_setting_auto_dir(100);
+ 243   5                      MotorR_setting_auto_dir(50);
+ 244   5                  }
+ 245   4                  break;
+ 246   4              }
+ 247   3              case 120:         //0111 1000
+ 248   3              {
+ 249   4                  // 如果是半速
+ 250   4                  if (half_speed_flag)
+ 251   4                  {
+ 252   5                      MotorL_setting_auto_dir(50/2);
+ 253   5                      MotorR_setting_auto_dir(100/2);
+ 254   5                  }
+ 255   4                  else
+ 256   4                  {
+ 257   5                      MotorL_setting_auto_dir(50);
+ 258   5                      MotorR_setting_auto_dir(100);
+ 259   5                  }
+ 260   4              }
+ 261   3      
+ 262   3              //3灯情况 
+ 263   3              case 28:                  //0001 1100
+ 264   3              {
+ 265   4                  // 如果是半速
+ 266   4                  if (half_speed_flag)
+ 267   4                  {
+ 268   5                      MotorL_setting_auto_dir(100 / 2);
+ 269   5                      MotorR_setting_auto_dir(80 / 2);
+ 270   5                  }
+ 271   4                  else
+ 272   4                  {
+ 273   5                      MotorL_setting_auto_dir(100);
+ 274   5                      MotorR_setting_auto_dir(80);
+ 275   5                  }
+ 276   4                  break;
+ 277   4              }
+ 278   3              case 56:                //0011 1000
+ 279   3              {
+ 280   4                  // 如果是半速
+ 281   4                  if (half_speed_flag)
  282   4                  {
- 283   5                      MotorL_setting_auto_dir(100);
- 284   5                      MotorR_setting_auto_dir(100);
+ 283   5                      MotorL_setting_auto_dir(80 / 2);
+ 284   5                      MotorR_setting_auto_dir(100 / 2);
  285   5                  }
- 286   4                  break;
- 287   4              }
- 288   3              case 24:                             //0000 1100
- 289   3              {
- 290   4                  // 如果是半速
- 291   4                  if (half_speed_flag)
- 292   4                  {
- 293   5                      MotorL_setting_auto_dir(100/2);
- 294   5                      MotorR_setting_auto_dir(60/2);
- 295   5                  }
- 296   4                  else
+ 286   4                  else
+ 287   4                  {
+ 288   5                      MotorL_setting_auto_dir(80);
+ 289   5                      MotorR_setting_auto_dir(100);
+ 290   5                  }
+ 291   4                  break;
+ 292   4              }
+ 293   3              case 14:              //0000 1110
+ 294   3              {
+ 295   4                  // 如果是半速
+ 296   4                  if (half_speed_flag)
  297   4                  {
- 298   5                      MotorL_setting_auto_dir(100);
- 299   5                      MotorR_setting_auto_dir(60);
+ 298   5                      MotorL_setting_auto_dir(100/2);
+ 299   5                      MotorR_setting_auto_dir(40/2);
  300   5                  }
- 301   4                  break;
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 6   
+ 301   4                  else
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 6   
 
- 302   4              }
- 303   3              case 48:                //0011 0000
- 304   3              {
- 305   4                  // 如果是半速
- 306   4                  if (half_speed_flag)
- 307   4                  {
- 308   5                      MotorL_setting_auto_dir(60/2);
- 309   5                      MotorR_setting_auto_dir(100/2);
- 310   5                  }
- 311   4                  else
+ 302   4                  {
+ 303   5                      MotorL_setting_auto_dir(100);
+ 304   5                      MotorR_setting_auto_dir(40);
+ 305   5                  }
+ 306   4                  break;
+ 307   4              }
+ 308   3              case 112:             //0111 0000
+ 309   3              {
+ 310   4                  // 如果是半速
+ 311   4                  if (half_speed_flag)
  312   4                  {
- 313   5                      MotorL_setting_auto_dir(60);
- 314   5                      MotorR_setting_auto_dir(100);
+ 313   5                      MotorL_setting_auto_dir(40/2);
+ 314   5                      MotorR_setting_auto_dir(100/2);
  315   5                  }
- 316   4                  break;
- 317   4              }
- 318   3              //1灯情况    
- 319   3              case 8:                   //0000 1000
- 320   3              {
- 321   4                  // 如果是半速
- 322   4                  if (half_speed_flag)
- 323   4                  {
- 324   5                      MotorL_setting_auto_dir(100/2);
- 325   5                      MotorR_setting_auto_dir(80/2);
- 326   5                  }
- 327   4                  else
- 328   4                  {
- 329   5                      MotorL_setting_auto_dir(100);
- 330   5                      MotorR_setting_auto_dir(80);
- 331   5                  }
- 332   4                  break;
- 333   4              }
- 334   3              case 10:                    //0001 0000
- 335   3              {
- 336   4                  // 如果是半速
- 337   4                  if (half_speed_flag)
- 338   4                  {
- 339   5                      MotorL_setting_auto_dir(80/2);
- 340   5                      MotorR_setting_auto_dir(100/2);
- 341   5                  }
- 342   4                  else
- 343   4                  {
- 344   5                      MotorL_setting_auto_dir(80);
- 345   5                      MotorR_setting_auto_dir(100);
- 346   5                  }
- 347   4                  break;
- 348   4              }
- 349   3      
- 350   3              case 4:                   //0000 0100
- 351   3              {
- 352   4                  // 如果是半速
- 353   4                  if (half_speed_flag)
- 354   4                  {
- 355   5                      MotorL_setting_auto_dir(100/2);
- 356   5                      MotorR_setting_auto_dir(60/2);
- 357   5                  }
- 358   4                  else
+ 316   4                  else
+ 317   4                  {
+ 318   5                      MotorL_setting_auto_dir(40);
+ 319   5                      MotorR_setting_auto_dir(100);
+ 320   5                  }
+ 321   4                  break;
+ 322   4              }
+ 323   3      
+ 324   3              //2灯情况
+ 325   3              case 18:                //0001 1000
+ 326   3              {
+ 327   4                  // 如果是半速
+ 328   4                  if (half_speed_flag)
+ 329   4                  {
+ 330   5                      MotorL_setting_auto_dir(100/2);
+ 331   5                      MotorR_setting_auto_dir(100/2);
+ 332   5                  }
+ 333   4                  else
+ 334   4                  {
+ 335   5                      MotorL_setting_auto_dir(100);
+ 336   5                      MotorR_setting_auto_dir(100);
+ 337   5                  }
+ 338   4                  break;
+ 339   4              }
+ 340   3              case 24:                             //0000 1100
+ 341   3              {
+ 342   4                  // 如果是半速
+ 343   4                  if (half_speed_flag)
+ 344   4                  {
+ 345   5                      MotorL_setting_auto_dir(100/2);
+ 346   5                      MotorR_setting_auto_dir(60/2);
+ 347   5                  }
+ 348   4                  else
+ 349   4                  {
+ 350   5                      MotorL_setting_auto_dir(100);
+ 351   5                      MotorR_setting_auto_dir(60);
+ 352   5                  }
+ 353   4                  break;
+ 354   4              }
+ 355   3              case 48:                //0011 0000
+ 356   3              {
+ 357   4                  // 如果是半速
+ 358   4                  if (half_speed_flag)
  359   4                  {
- 360   5                      MotorL_setting_auto_dir(100);
- 361   5                      MotorR_setting_auto_dir(60);
- 362   5                  }   
- 363   4                  break;
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 7   
+ 360   5                      MotorL_setting_auto_dir(60/2);
+ 361   5                      MotorR_setting_auto_dir(100/2);
+ 362   5                  }
+ 363   4                  else
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 7   
 
- 364   4              }
- 365   3              case 32:                      //0010 0000
- 366   3              {
- 367   4                  // 如果是半速
- 368   4                  if (half_speed_flag)
- 369   4                  {
- 370   5                      MotorL_setting_auto_dir(60/2);
- 371   5                      MotorR_setting_auto_dir(100/2);
- 372   5                  }
- 373   4                  else
- 374   4                  {
- 375   5                      MotorL_setting_auto_dir(60);
- 376   5                      MotorR_setting_auto_dir(100);
- 377   5                  }
- 378   4                  break;
- 379   4              }
- 380   3              //右转向
- 381   3      
- 382   3              case 240:               //1111 0000
- 383   3              {
- 384   4                  // 如果是半速
- 385   4                  if (half_speed_flag)
- 386   4                  {
- 387   5                      MotorL_setting_auto_dir(-50/2);
- 388   5                      MotorR_setting_auto_dir(100/2);
- 389   5                  }
- 390   4                  else
- 391   4                  {
- 392   5                      MotorL_setting_auto_dir(-50);
- 393   5                      MotorR_setting_auto_dir(100);
- 394   5                  }
- 395   4                  break;
- 396   4              }
- 397   3      
- 398   3              case 224:               //1110 0000
- 399   3              {
- 400   4                  // 如果是半速
- 401   4                  if (half_speed_flag)
- 402   4                  {
- 403   5                      MotorL_setting_auto_dir(-75 / 2);
- 404   5                      MotorR_setting_auto_dir(100 / 2);
- 405   5                  }
- 406   4                  else
- 407   4                  {
- 408   5                      MotorL_setting_auto_dir(-75);
- 409   5                      MotorR_setting_auto_dir(100);
- 410   5                  }
- 411   4                  break;
- 412   4              }
- 413   3      
- 414   3              case 192:               //1100 0000
- 415   3              {
- 416   4                  // 如果是半速
- 417   4                  if (half_speed_flag)
- 418   4                  {
- 419   5                      MotorL_setting_auto_dir(-100/2);
- 420   5                      MotorR_setting_auto_dir(100/2);
- 421   5                  }
- 422   4                  else
- 423   4                  {
- 424   5                      MotorL_setting_auto_dir(-100);
- 425   5                      MotorR_setting_auto_dir(100);
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 8   
+ 364   4                  {
+ 365   5                      MotorL_setting_auto_dir(60);
+ 366   5                      MotorR_setting_auto_dir(100);
+ 367   5                  }
+ 368   4                  break;
+ 369   4              }
+ 370   3              //1灯情况    
+ 371   3              case 8:                   //0000 1000
+ 372   3              {
+ 373   4                  // 如果是半速
+ 374   4                  if (half_speed_flag)
+ 375   4                  {
+ 376   5                      MotorL_setting_auto_dir(100/2);
+ 377   5                      MotorR_setting_auto_dir(80/2);
+ 378   5                  }
+ 379   4                  else
+ 380   4                  {
+ 381   5                      MotorL_setting_auto_dir(100);
+ 382   5                      MotorR_setting_auto_dir(80);
+ 383   5                  }
+ 384   4                  break;
+ 385   4              }
+ 386   3              case 10:                    //0001 0000
+ 387   3              {
+ 388   4                  // 如果是半速
+ 389   4                  if (half_speed_flag)
+ 390   4                  {
+ 391   5                      MotorL_setting_auto_dir(80/2);
+ 392   5                      MotorR_setting_auto_dir(100/2);
+ 393   5                  }
+ 394   4                  else
+ 395   4                  {
+ 396   5                      MotorL_setting_auto_dir(80);
+ 397   5                      MotorR_setting_auto_dir(100);
+ 398   5                  }
+ 399   4                  break;
+ 400   4              }
+ 401   3      
+ 402   3              case 4:                   //0000 0100
+ 403   3              {
+ 404   4                  // 如果是半速
+ 405   4                  if (half_speed_flag)
+ 406   4                  {
+ 407   5                      MotorL_setting_auto_dir(100/2);
+ 408   5                      MotorR_setting_auto_dir(60/2);
+ 409   5                  }
+ 410   4                  else
+ 411   4                  {
+ 412   5                      MotorL_setting_auto_dir(100);
+ 413   5                      MotorR_setting_auto_dir(60);
+ 414   5                  }   
+ 415   4                  break;
+ 416   4              }
+ 417   3              case 32:                      //0010 0000
+ 418   3              {
+ 419   4                  // 如果是半速
+ 420   4                  if (half_speed_flag)
+ 421   4                  {
+ 422   5                      MotorL_setting_auto_dir(60/2);
+ 423   5                      MotorR_setting_auto_dir(100/2);
+ 424   5                  }
+ 425   4                  else
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 8   
 
- 426   5                  }
- 427   4                  break;
- 428   4              }
- 429   3       
- 430   3      
- 431   3              case 15:                //0000 1111
- 432   3              {
- 433   4                  // 如果是半速
- 434   4                  if (half_speed_flag)
- 435   4                  {
- 436   5                      MotorL_setting_auto_dir(100 / 2);
- 437   5                      MotorR_setting_auto_dir(-50 / 2);
- 438   5                  }
- 439   4                  else
- 440   4                  {
- 441   5                      MotorL_setting_auto_dir(100);
- 442   5                      MotorR_setting_auto_dir(-50);
- 443   5                  }
- 444   4                  break;
- 445   4              }
- 446   3      
- 447   3              case 7:               //0000 0111
- 448   3              {
- 449   4                  // 如果是半速
- 450   4                  if (half_speed_flag)
- 451   4                  {
- 452   5                      MotorL_setting_auto_dir(100 / 2);
- 453   5                      MotorR_setting_auto_dir(-75 / 2);
- 454   5                  }
- 455   4                  else
- 456   4                  {
- 457   5                      MotorL_setting_auto_dir(100);
- 458   5                      MotorR_setting_auto_dir(-75);
- 459   5                  }
- 460   4                  break;
- 461   4              }
- 462   3      
- 463   3              case 195:               //0000 0011
- 464   3              {
- 465   4                  // 如果是半速
- 466   4                  if (half_speed_flag)
- 467   4                  {
- 468   5                      MotorL_setting_auto_dir(100/2);
- 469   5                      MotorR_setting_auto_dir(-100/2);
- 470   5                  }
- 471   4                  else
- 472   4                  {
- 473   5                      MotorL_setting_auto_dir(100);
- 474   5                      MotorR_setting_auto_dir(-100);
- 475   5                  }
- 476   4                  break;
- 477   4              }
- 478   3      
- 479   3              }
- 480   2              pwms_enable();         //PWM设定生效
- 481   2          }
- 482   1          else
- 483   1          {
- 484   2              G_LED_OFF();
- 485   2          }
- 486   1          
- 487   1      }// End of void Tracing_Timer_Handle(void)
-C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 07:37:20 PAGE 9   
+ 426   4                  {
+ 427   5                      MotorL_setting_auto_dir(60);
+ 428   5                      MotorR_setting_auto_dir(100);
+ 429   5                  }
+ 430   4                  break;
+ 431   4              }
+ 432   3              //右转向
+ 433   3      
+ 434   3              case 240:               //1111 0000
+ 435   3              {
+ 436   4                  // 如果是半速
+ 437   4                  if (half_speed_flag)
+ 438   4                  {
+ 439   5                      MotorL_setting_auto_dir(-50/2);
+ 440   5                      MotorR_setting_auto_dir(100/2);
+ 441   5                  }
+ 442   4                  else
+ 443   4                  {
+ 444   5                      MotorL_setting_auto_dir(-50);
+ 445   5                      MotorR_setting_auto_dir(100);
+ 446   5                  }
+ 447   4                  break;
+ 448   4              }
+ 449   3      
+ 450   3              case 224:               //1110 0000
+ 451   3              {
+ 452   4                  // 如果是半速
+ 453   4                  if (half_speed_flag)
+ 454   4                  {
+ 455   5                      MotorL_setting_auto_dir(-75 / 2);
+ 456   5                      MotorR_setting_auto_dir(100 / 2);
+ 457   5                  }
+ 458   4                  else
+ 459   4                  {
+ 460   5                      MotorL_setting_auto_dir(-75);
+ 461   5                      MotorR_setting_auto_dir(100);
+ 462   5                  }
+ 463   4                  break;
+ 464   4              }
+ 465   3      
+ 466   3              case 192:               //1100 0000
+ 467   3              {
+ 468   4                  // 如果是半速
+ 469   4                  if (half_speed_flag)
+ 470   4                  {
+ 471   5                      MotorL_setting_auto_dir(-100/2);
+ 472   5                      MotorR_setting_auto_dir(100/2);
+ 473   5                  }
+ 474   4                  else
+ 475   4                  {
+ 476   5                      MotorL_setting_auto_dir(-100);
+ 477   5                      MotorR_setting_auto_dir(100);
+ 478   5                  }
+ 479   4                  break;
+ 480   4              }
+ 481   3       
+ 482   3      
+ 483   3              case 15:                //0000 1111
+ 484   3              {
+ 485   4                  // 如果是半速
+ 486   4                  if (half_speed_flag)
+ 487   4                  {
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 9   
 
- 488          
- 489          #endif /* __DEJA_VU_C */
- 490          
- 491          
+ 488   5                      MotorL_setting_auto_dir(100 / 2);
+ 489   5                      MotorR_setting_auto_dir(-50 / 2);
+ 490   5                  }
+ 491   4                  else
+ 492   4                  {
+ 493   5                      MotorL_setting_auto_dir(100);
+ 494   5                      MotorR_setting_auto_dir(-50);
+ 495   5                  }
+ 496   4                  break;
+ 497   4              }
+ 498   3      
+ 499   3              case 7:               //0000 0111
+ 500   3              {
+ 501   4                  // 如果是半速
+ 502   4                  if (half_speed_flag)
+ 503   4                  {
+ 504   5                      MotorL_setting_auto_dir(100 / 2);
+ 505   5                      MotorR_setting_auto_dir(-75 / 2);
+ 506   5                  }
+ 507   4                  else
+ 508   4                  {
+ 509   5                      MotorL_setting_auto_dir(100);
+ 510   5                      MotorR_setting_auto_dir(-75);
+ 511   5                  }
+ 512   4                  break;
+ 513   4              }
+ 514   3      
+ 515   3              case 195:               //0000 0011
+ 516   3              {
+ 517   4                  // 如果是半速
+ 518   4                  if (half_speed_flag)
+ 519   4                  {
+ 520   5                      MotorL_setting_auto_dir(100/2);
+ 521   5                      MotorR_setting_auto_dir(-100/2);
+ 522   5                  }
+ 523   4                  else
+ 524   4                  {
+ 525   5                      MotorL_setting_auto_dir(100);
+ 526   5                      MotorR_setting_auto_dir(-100);
+ 527   5                  }
+ 528   4                  break;
+ 529   4              }
+ 530   3      
+ 531   3              }
+ 532   2              pwms_enable();         //PWM设定生效
+ 533   2          }
+ 534   1          else
+ 535   1          {
+ 536   2              G_LED_OFF();
+ 537   2          }
+ 538   1          
+ 539   1      }// End of void Tracing_Timer_Handle(void)
+ 540          
+ 541          #endif /* __DEJA_VU_C */
+ 542          
+ 543          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    783    ----
+   CODE SIZE        =    854    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
+C51 COMPILER V9.54   DEJA_VU                                                               11/25/2018 17:51:05 PAGE 10  
+
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      2       2
+   DATA SIZE        =      5    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

@@ -1,9 +1,9 @@
-C51 COMPILER V9.54   MAIN                                                                  11/25/2018 07:37:22 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  11/25/2018 17:51:07 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN main.obj
-COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Main\main.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\i
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Main\main.c OPTIMIZE(0,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\i
                     -nterrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXTEND PRINT
                     -(.\main.lst) TABS(2) OBJECT(main.obj)
 
@@ -26,22 +26,20 @@ line level    source
   15   1        Usart_init();                 // 初始化串口
   16   1        Interrupt_init();                 // 初始化中断 
   17   1        
-  18   1          //printf("Sys_Init\r\n");
-  19   1        
-  20   1        // 蜂鸣器短鸣
-  21   1        Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
-  22   1        
-  23   1        Timers_init();              // 定时器初始化
-  24   1        ADC_init();                 // 初始化ADC
-  25   1        
-  26   1        while(1)
-  27   1        {
-  28   2          // ADC结果读取
-  29   2          //ADCResult_getting();  
-  30   2        }
-  31   1         
-  32   1      } 
-  33           
+  18   1        // 蜂鸣器短鸣
+  19   1        Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
+  20   1        
+  21   1        Timers_init();              // 定时器初始化
+  22   1        ADC_init();                 // 初始化ADC
+  23   1        
+  24   1        while(1)
+  25   1        {
+  26   2          // ADC结果读取
+  27   2          //ADCResult_getting();  
+  28   2        }
+  29   1         
+  30   1      } 
+  31           
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

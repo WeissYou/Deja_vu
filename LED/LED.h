@@ -35,6 +35,7 @@ void W_LED_ON(void);
 void W_LED_OFF(void);
 void G_LED_ON(void);
 void G_LED_OFF(void);
+void LED_Line_Show(unsigned char led_data);
 #endif /* __LED_H */
 
 

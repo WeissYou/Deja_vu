@@ -1,9 +1,9 @@
-C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 07:37:22 PAGE 1   
+C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 17:51:07 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MOTORS_BREAK
 OBJECT MODULE PLACED IN Motors_Break.obj
-COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Motor\Motors_Break.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\G
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Motor\Motors_Break.c OPTIMIZE(0,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\G
                     -lobal;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXT
                     -END PRINT(.\Motors_Break.lst) TABS(2) OBJECT(Motors_Break.obj)
 
@@ -62,7 +62,7 @@ line level    source
   51          * Function Name  :  Motors_Break_Is_Ok
   52          * Description    :  查询小车倒退修正机制是否已经完成
   53          * Input          :  None
-C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 07:37:22 PAGE 2   
+C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 17:51:07 PAGE 2   
 
   54          * Output         :  None
   55          * Return         :  None
@@ -126,7 +126,7 @@ line level    source
  113   3                  {
  114   4                      // 电机停止
  115   4                      Motors_stop();
-C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 07:37:22 PAGE 3   
+C51 COMPILER V9.54   MOTORS_BREAK                                                          11/25/2018 17:51:07 PAGE 3   
 
  116   4      
  117   4                      // 设置倒车修正机制为空闲状态

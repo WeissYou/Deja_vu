@@ -1,9 +1,9 @@
-C51 COMPILER V9.54   LED                                                                   11/25/2018 07:37:25 PAGE 1   
+C51 COMPILER V9.54   LED                                                                   11/25/2018 17:51:09 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE LED
 OBJECT MODULE PLACED IN LED.obj
-COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE LED\LED.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\int
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE LED\LED.c OPTIMIZE(0,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global;.\int
                     -errupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXTEND PRINT(.
                     -\LED.lst) TABS(2) OBJECT(LED.obj)
 
@@ -62,7 +62,7 @@ line level    source
   51          *******************************************************************************/
   52          void W_LED_ON(void)
   53          {
-C51 COMPILER V9.54   LED                                                                   11/25/2018 07:37:25 PAGE 2   
+C51 COMPILER V9.54   LED                                                                   11/25/2018 17:51:09 PAGE 2   
 
   54   1          W_LED_PIN = 1;
   55   1      }// End of void W_LED_ON(void)
@@ -111,15 +111,105 @@ line level    source
   98   1      }// End of void G_LED_OFF(void)
   99          
  100          
- 101          /******************* (C) COPYRIGHT 2018 ≥¬À’—Ù *****END OF FILE******************/
+ 101          /*******************************************************************************
+ 102          *                           ≥¬À’—Ù@2018-11-25
+ 103          * Function Name  :  LED_Line_Show
+ 104          * Description    :  œ‘ æLEDµ∆Ãı
+ 105          * Input          :  unsigned char led_data
+ 106          * Output         :  None
+ 107          * Return         :  None
+ 108          *******************************************************************************/
+ 109          void LED_Line_Show(unsigned char led_data)
+ 110          {
+ 111   1          if (led_data&(0x01 << 0))
+ 112   1          {
+ 113   2              LED_LINE_0 = 1;
+ 114   2          }
+ 115   1          else
+C51 COMPILER V9.54   LED                                                                   11/25/2018 17:51:09 PAGE 3   
+
+ 116   1          {
+ 117   2              LED_LINE_0 = 0;
+ 118   2          }
+ 119   1      
+ 120   1          if (led_data&(0x01 << 1))
+ 121   1          {
+ 122   2              LED_LINE_1 = 1;
+ 123   2          }
+ 124   1          else
+ 125   1          {
+ 126   2              LED_LINE_1 = 0;
+ 127   2          }
+ 128   1      
+ 129   1          if (led_data&(0x01 << 2))
+ 130   1          {
+ 131   2              LED_LINE_2 = 1;
+ 132   2          }
+ 133   1          else
+ 134   1          {
+ 135   2              LED_LINE_2 = 0;
+ 136   2          }
+ 137   1      
+ 138   1          if (led_data&(0x01 << 3))
+ 139   1          {
+ 140   2              LED_LINE_3 = 1;
+ 141   2          }
+ 142   1          else
+ 143   1          {
+ 144   2              LED_LINE_3 = 0;
+ 145   2          }
+ 146   1      
+ 147   1          if (led_data&(0x01 << 4))
+ 148   1          {
+ 149   2              LED_LINE_4 = 1;
+ 150   2          }
+ 151   1          else
+ 152   1          {
+ 153   2              LED_LINE_4 = 0;
+ 154   2          }
+ 155   1      
+ 156   1          if (led_data&(0x01 << 5))
+ 157   1          {
+ 158   2              LED_LINE_5 = 1;
+ 159   2          }
+ 160   1          else
+ 161   1          {
+ 162   2              LED_LINE_5 = 0;
+ 163   2          }
+ 164   1      
+ 165   1          if (led_data&(0x01 << 6))
+ 166   1          {
+ 167   2              LED_LINE_6 = 1;
+ 168   2          }
+ 169   1          else
+ 170   1          {
+ 171   2              LED_LINE_6 = 0;
+ 172   2          }
+ 173   1      
+ 174   1          if (led_data&(0x01 << 7))
+ 175   1          {
+ 176   2              LED_LINE_7 = 1;
+ 177   2          }
+C51 COMPILER V9.54   LED                                                                   11/25/2018 17:51:09 PAGE 4   
+
+ 178   1          else
+ 179   1          {
+ 180   2              LED_LINE_7 = 0;
+ 181   2          }
+ 182   1      
+ 183   1      }// End of void LED_Line_Show(unsigned char led_data)
+ 184          
+ 185          
+ 186          
+ 187          /******************* (C) COPYRIGHT 2018 ≥¬À’—Ù *****END OF FILE******************/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     23    ----
+   CODE SIZE        =    113    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =      1    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

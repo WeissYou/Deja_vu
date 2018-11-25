@@ -14,15 +14,13 @@ void main()
   Buzzer_Init();                        // 初始化蜂鸣器
   Usart_init();					        // 初始化串口
   Interrupt_init();			            // 初始化中断	
-  
-    //printf("Sys_Init\r\n");
 	
   // 蜂鸣器短鸣
   Buzzer_Tweet(BUZZER_SHORT_TWEET_TIME);
 	
 	Timers_init();					    // 定时器初始化
   ADC_init();					        // 初始化ADC
-  
+	
   while(1)
   {
     // ADC结果读取

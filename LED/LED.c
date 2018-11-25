@@ -98,4 +98,90 @@ void G_LED_OFF(void)
 }// End of void G_LED_OFF(void)
 
 
+/*******************************************************************************
+*                           ≥¬À’—Ù@2018-11-25
+* Function Name  :  LED_Line_Show
+* Description    :  œ‘ æLEDµ∆Ãı
+* Input          :  unsigned char led_data
+* Output         :  None
+* Return         :  None
+*******************************************************************************/
+void LED_Line_Show(unsigned char led_data)
+{
+    if (led_data&(0x01 << 0))
+    {
+        LED_LINE_0 = 1;
+    }
+    else
+    {
+        LED_LINE_0 = 0;
+    }
+
+    if (led_data&(0x01 << 1))
+    {
+        LED_LINE_1 = 1;
+    }
+    else
+    {
+        LED_LINE_1 = 0;
+    }
+
+    if (led_data&(0x01 << 2))
+    {
+        LED_LINE_2 = 1;
+    }
+    else
+    {
+        LED_LINE_2 = 0;
+    }
+
+    if (led_data&(0x01 << 3))
+    {
+        LED_LINE_3 = 1;
+    }
+    else
+    {
+        LED_LINE_3 = 0;
+    }
+
+    if (led_data&(0x01 << 4))
+    {
+        LED_LINE_4 = 1;
+    }
+    else
+    {
+        LED_LINE_4 = 0;
+    }
+
+    if (led_data&(0x01 << 5))
+    {
+        LED_LINE_5 = 1;
+    }
+    else
+    {
+        LED_LINE_5 = 0;
+    }
+
+    if (led_data&(0x01 << 6))
+    {
+        LED_LINE_6 = 1;
+    }
+    else
+    {
+        LED_LINE_6 = 0;
+    }
+
+    if (led_data&(0x01 << 7))
+    {
+        LED_LINE_7 = 1;
+    }
+    else
+    {
+        LED_LINE_7 = 0;
+    }
+
+}// End of void LED_Line_Show(unsigned char led_data)
+
+
+
 /******************* (C) COPYRIGHT 2018 ≥¬À’—Ù *****END OF FILE******************/

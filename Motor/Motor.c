@@ -37,7 +37,6 @@
 void MotorL_setting_auto_dir(char speed)		   
 {
   uchar _speed;               // 速度临时变量	
-	printf("L:%d\n",(int)speed);
   if (speed < 0)
   {
     // 后退
@@ -91,7 +90,6 @@ void MotorL_setting_auto_dir(char speed)
 void MotorR_setting_auto_dir(char speed)		   
 {
     uchar _speed;               // 速度临时变量
-		printf("R:%d\n",(int)speed);
     if (speed < 0)
     {
         // 后退

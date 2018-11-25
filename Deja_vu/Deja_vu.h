@@ -36,6 +36,8 @@ typedef enum
 
 void Tracing_Start(void);               // 开始寻迹机制
 void Tracing_Set_Speed_Half(void);      // 设置寻迹速度为半速
+void Tracing_Enable_All_White_Stop(void); // 使能全白停车功能
+void Tracing_Disnable_All_White_Stop(void); // 失能全白停车功能
 void Tracing_Set_Speed_All(void);       // 设置寻迹速度为半速
 void Tracing_Stop(void);                // 停止寻迹机制
 unsigned char Tracing_Get_Black_Spot_Number(void);      // 获取当前寻迹传感器压到的黑点个数

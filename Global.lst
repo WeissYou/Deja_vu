@@ -1,9 +1,9 @@
-C51 COMPILER V9.54   GLOBAL                                                                11/25/2018 07:37:21 PAGE 1   
+C51 COMPILER V9.54   GLOBAL                                                                11/25/2018 17:51:06 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE GLOBAL
 OBJECT MODULE PLACED IN Global.obj
-COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Global\Global.c OPTIMIZE(3,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global
+COMPILER INVOKED BY: C:\Keil_v4\C51\BIN\C51.EXE Global\Global.c OPTIMIZE(0,SPEED) BROWSE INCDIR(.\ADC;.\Deja_vu;.\Global
                     -;.\interrupt;.\Main;.\Motor;.\PWM;.\Timer;.\USART;..\DC_motors;.\Task;.\Buzzer;.\LED) DEFINE(DEBUG) DEBUG OBJECTEXTEND P
                     -RINT(.\Global.lst) TABS(2) OBJECT(Global.obj)
 
@@ -54,16 +54,16 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     63    ----
+   CODE SIZE        =     76    ----
    CONSTANT SIZE    =      8    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     21       4
+   DATA SIZE        =     25    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =      1    ----
 END OF MODULE INFORMATION.
 
-C51 COMPILER V9.54   GLOBAL                                                                11/25/2018 07:37:21 PAGE 2   
+C51 COMPILER V9.54   GLOBAL                                                                11/25/2018 17:51:06 PAGE 2   
 
 
 C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

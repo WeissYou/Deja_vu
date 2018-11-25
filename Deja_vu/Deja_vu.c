@@ -21,7 +21,7 @@
 #include "LED.h"
 /* Private define ------------------------------------------------------------*/
 volatile unsigned char half_speed_flag=0;                // 半速标志位
-
+volatile unsigned char Tracing_All_White_Stop_Flag = 0;  // 全白停车标志位
 /* Private typedef -----------------------------------------------------------*/
 
 
@@ -42,6 +42,11 @@ void Tracing_Start(void)
 {
     // 设置寻迹机制的状态为正在运行
     Tracing_status = TRACING_STATUS_STATUS_RUNING;
+
+    // 两个轮子都先给个速度
+    MotorL_setting_auto_dir(10);
+    MotorR_setting_auto_dir(10);
+
 }// End of void Tracing_Start(void)
 
 /*******************************************************************************
@@ -57,6 +62,32 @@ void Tracing_Set_Speed_Half(void)
     half_speed_flag = 1;
 }// End of void Tracing_Set_Speed_Half(void)
 
+
+/*******************************************************************************
+*                           陈苏阳@2018-11-25
+* Function Name  :  Tracing_Enable_All_White_Stop
+* Description    :  使能全白停车功能
+* Input          :  None
+* Output         :  None
+* Return         :  None
+*******************************************************************************/
+void Tracing_Enable_All_White_Stop(void)
+{
+    Tracing_All_White_Stop_Flag = 1;
+}// End of void Tracing_Enable_All_White_Stop(void)
+
+/*******************************************************************************
+*                           陈苏阳@2018-11-25
+* Function Name  :  Tracing_Disnable_All_White_Stop
+* Description    :  失能全白停车功能
+* Input          :  None
+* Output         :  None
+* Return         :  None
+*******************************************************************************/
+void Tracing_Disnable_All_White_Stop(void)
+{
+    Tracing_All_White_Stop_Flag = 0;
+}// End of void Tracing_Disnable_All_White_Stop(void)
 
  /*******************************************************************************
  *                           陈苏阳@2018-11-25
@@ -141,13 +172,13 @@ void Tracing_Timer_Handle(void)
             // 如果是半速
             if (half_speed_flag)
             {
-                MotorL_setting_auto_dir(100/2);
-                MotorR_setting_auto_dir(100/2);
+                MotorL_setting_auto_dir(50/2);
+                MotorR_setting_auto_dir(50/2);
             }
             else
             {
-                MotorL_setting_auto_dir(100);
-                MotorR_setting_auto_dir(100);
+                MotorL_setting_auto_dir(50);
+                MotorR_setting_auto_dir(50);
             }
             break;
         }
@@ -156,7 +187,28 @@ void Tracing_Timer_Handle(void)
 
         case 0:
         {
-            Motors_stop();
+            // 如果全白停车标志位被置位,则PWM给0
+            if (Tracing_All_White_Stop_Flag)
+            {
+                MotorL_setting_auto_dir(0);
+                MotorR_setting_auto_dir(0);
+							
+            }
+            else
+            {
+                // 如果是半速
+                if (half_speed_flag)
+                {
+                    MotorL_setting_auto_dir(50 / 2);
+                    MotorR_setting_auto_dir(50 / 2);
+                }
+                else
+                {
+                    MotorL_setting_auto_dir(50);
+                    MotorR_setting_auto_dir(50);
+                }
+            }
+            
             break;
         }
 

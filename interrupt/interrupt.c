@@ -1,13 +1,15 @@
-#include"DEJA_VU.H"
-#include"GLOBAL.H"
-#include"USART.H"
-#include"MOTOR.H"
-#include"PWM.H"
-#include"ADC.H"
+#include "DEJA_VU.H"
+#include "GLOBAL.H"
+#include "USART.H"
+#include "MOTOR.H"
+#include "PWM.H"
+#include "ADC.H"
 #include "Motors_Break.h"
 #include "Buzzer.h"
 #include "Task.h"
 #include "LED.h"
+#include "stdio.h"
+
 void Interrupt_init(void)
 {
  	ET0 = 1;			 //定时器0中断允许
@@ -32,8 +34,14 @@ void Timer0_routine(void) interrupt 1 using 0
     for (i = 0; i < 8; i++)adc[i] = ADC_Get_Channel_Data(i);
 
     //数据处理 
-	Data_processing();              	
+	Data_processing();    
 
+    // 显示LED光条
+    LED_Line_Show(situation);
+
+#ifdef DEBUG    
+    printf("%d\n", (int)situation);
+#endif
     // 任务处理函数
     Task_Timer_Handle();
 
